@@ -85,6 +85,10 @@ const config = {
       {
         from: './src/frames',
         to: 'frames'
+      },
+      {
+        from: './src/favicon.ico',
+        to: './'
       }
     ]),
     new HtmlWebpackPlugin({
