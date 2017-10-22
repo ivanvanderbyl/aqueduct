@@ -20,9 +20,11 @@ interface ITemplateService {
 
 interface ITemplateModel {
   name: string;
+  description?: string;
   properties: Array<{
     propertyName: string;
     propertyType: string;
+    description?: string;
   }>;
 }
 
@@ -38,11 +40,13 @@ interface ITemplateOperation {
   bodyParameter?: string;
   hasParameters: boolean;
   hasBodyParameter: boolean;
+  description?: string;
 }
 
 interface ITemplateOperationParameters {
   parameterName: string;
   parameterType: string;
+  description?: string;
 }
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 as any;
@@ -62,68 +66,111 @@ const getSwaggerJson = () => {
   });
 };
 
-getSwaggerJson();
-
-const template = handlebars.compile(`/* tslint:disable */
+const template = (eventContent: string) => handlebars.compile(`/* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
-import { Events as EventNamespace } from '../socket/events';
+import * as io from 'socket.io-client';
 
+/**
+ * ### Background
+ * Aqueduct is a protocol published by ERC dEX to faciliate the standardization of sharing liquidity among Øx protocol-compliant relayers. The Aqueduct protocol is outlined here and is embodied in this websocket client (documented below) and a REST API which is documented here.
+ *
+ * #### Rationale
+ * While the Øx Project publishes a recommended relayer API specification that covers much of what relayers will need to share liquidity, additional functionality is needed to ensure timely, standardized information sharing. In particular, the ability to notify the entire network of pooled liquidity providers of an important change must be provided. This cannot be achieved via a traditional REST API without significant work on the part of each relayer.
+ *
+ * #### Goals for this version
+ * This is a pre-alpha version of Aqueduct Client that is focused on simply standardizing a way of notifying liquidity partners of changes in orders placed on one-anothers' books.
+ *
+ * ### Installation
+ * \`\`\`
+ * npm install aqueduct
+ * \`\`\`
+ */
 export namespace Aqueduct {
   let baseUrl: string;
   let apiKey: string | undefined;
-  export const Events = EventNamespace;
+  let socket: SocketIOClient.Socket;
 
+  /**
+   * Initialize the Aqueduct client. Required to use the client.
+   */
   export const Initialize = (params: { baseUrl: string, apiKey?: string }) => {
     baseUrl = params.baseUrl;
     apiKey = params.apiKey;
-    Events.Initialize(baseUrl);
+    socket = io(baseUrl);
   };
   {{#models}}
 
+  {{#if description}}
+  /**
+   * {{description}}
+   */
+  {{/if}}
   export interface {{name}} {
     {{#properties}}
+    {{#if description}}
+    /**
+     * {{description}}
+     */
+    {{/if}}
     {{propertyName}}: {{propertyType}};
     {{/properties}}
   }
   {{/models}}
-  {{#services}}
-  {{#operations}}
-  {{#if hasParameters}}
-
-  export interface {{paramsInterfaceName}} {
-    {{#parameters}}
-    {{parameterName}}: {{parameterType}};
-    {{/parameters}}
-  }
-  {{/if}}
-  {{/operations}}
-  {{/services}}
-  {{#services}}
-  export class {{name}} extends ApiService {
+  /**
+   * Namespace representing REST API for ERC dEX
+   */
+  export namespace Api {
+    {{#services}}
     {{#operations}}
+    {{#if hasParameters}}
 
-    public async {{id}}({{signature}}) {
-      const requestParams: IRequestParams = {
-        method: '{{method}}',
-        url: \`\${baseUrl}{{../../apiPath}}{{urlTemplate}}\`
-      };
-      {{#if queryParameters}}
-    
-      requestParams.queryParameters = {
-      {{#queryParameters}}
-        {{this}}: params.{{this}},
-      {{/queryParameters}}
-      };
+    export interface {{paramsInterfaceName}} {
+      {{#parameters}}
+      {{#if description}}
+      /**
+       * {{description}}
+       */
       {{/if}}
-      {{#if hasBodyParameter}}
-    
-      requestParams.body = params.{{bodyParameter}};
-      {{/if}}
-      return this.executeRequest<{{returnType}}>(requestParams);
-    };
+      {{parameterName}}: {{parameterType}};
+      {{/parameters}}
+    }
+    {{/if}}
     {{/operations}}
+    {{/services}}
+    {{#services}}
+    export class {{name}} extends ApiService {
+      {{#operations}}
+
+      {{#if description}}
+      /**
+       * {{description}}
+       */
+      {{/if}}
+      public async {{id}}({{signature}}) {
+        const requestParams: IRequestParams = {
+          method: '{{method}}',
+          url: \`\${baseUrl}{{../../apiPath}}{{urlTemplate}}\`
+        };
+        {{#if queryParameters}}
+
+        requestParams.queryParameters = {
+        {{#queryParameters}}
+          {{this}}: params.{{this}},
+        {{/queryParameters}}
+        };
+        {{/if}}
+        {{#if hasBodyParameter}}
+
+        requestParams.body = params.{{bodyParameter}};
+        {{/if}}
+        return this.executeRequest<{{returnType}}>(requestParams);
+      };
+      {{/operations}}
+    }
+    {{/services}}
   }
-  {{/services}}
+
+    ${eventContent}
 }
 `);
 
@@ -227,7 +274,7 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
   Object.keys(paths)
     .forEach(pathKey => {
       const methods = ['get', 'post', 'delete', 'patch', 'put', 'options', 'head'];
-      const path = paths[pathKey]
+      const path = paths[pathKey];
 
       Object.keys(path)
         .filter(operationKey => methods.find(m => m === operationKey))
@@ -262,7 +309,8 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
 
               operationParameters.push({
                 parameterName: `${parameterName}${parameter.required === false ? '?' : ''}`,
-                parameterType: getPropertyTypeFromSwaggerParameter(parameter)
+                parameterType: getPropertyTypeFromSwaggerParameter(parameter),
+                description: parameter.description
               });
 
               if (parameter.in === 'path') {
@@ -299,9 +347,10 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
             queryParameters,
             returnType,
             paramsInterfaceName,
-            hasBodyParameter
+            hasBodyParameter,
+            description: operation.description
           } as ITemplateOperation);
-        })
+        });
     });
 
   return {
@@ -320,13 +369,15 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
 
       return {
         name: `${getNormalizedDefinitionKey(definitionKey)}`,
+        description: definition.description,
         properties: Object.keys(properties).map(propertyKey => {
           const property = properties[propertyKey];
           const isRequired = definition.required && definition.required.find(propertyName => propertyName === propertyKey);
 
           return {
             propertyName: `${propertyKey}${isRequired ? '' : '?'}`,
-            propertyType: getPropertyTypeFromSwaggerProperty(property)
+            propertyType: getPropertyTypeFromSwaggerProperty(property),
+            description: property.description
           };
         })
       };
@@ -334,13 +385,22 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
   };
 };
 
-getSwaggerJson()
-  .then((swaggerSpec: Swagger.ISpec) => {
-    try {
-      const compiled = template(getTemplateView(swaggerSpec));
-      fs.writeFileSync(`${__dirname}/src/generated/api.ts`, compiled);
-      console.log('Api file generated!');
-    } catch (err) {
-      console.log(err);
-    }
-  });
+const getEventContent = () => {
+  return fs.readFileSync('./src/socket/events.ts').toString()
+    .replace('export interface Order {}', '')
+    .replace('declare const socket: any;', '');
+};
+
+(async () => {
+  const eventContent = getEventContent();
+  const spec = await getSwaggerJson();
+  fs.writeFileSync('./docs/src/frames/swagger.json', JSON.stringify(spec));
+
+  try {
+    const compiled = template(eventContent)(getTemplateView(spec));
+    fs.writeFileSync(`${__dirname}/src/generated/aqueduct.ts`, compiled);
+    console.log('Api file generated!');
+  } catch (err) {
+    console.log(err);
+  }
+})();

@@ -1,0 +1,53 @@
+$pewter: #7EA1E4;
+
+.navbar {
+  background-color: #121215;
+
+  img {
+    padding: 1.25rem 1rem;    
+  }
+
+  .link {
+    padding: 0 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #bbbbbb;
+
+    &.is-active {
+      color: $pewter;
+    }
+  }
+}
+
+.logo-container:hover, .navbar .link:hover {
+  background-color: #252525;
+}
+
+html {
+  background-color: #1d1d21;
+  color: #D8D8D8;
+  font-family: 'Roboto', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  overflow: auto;
+}
+
+body {
+  margin: 0;
+}
+
+.fl {
+  display: flex;
+}
+
+.sb {
+  justify-content: space-between;
+}
+
+.vc {
+  align-items: center;
+}

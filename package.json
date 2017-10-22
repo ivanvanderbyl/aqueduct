@@ -1,29 +1,32 @@
 {
-  "name": "aqueduct.js",
+  "name": "aqueduct",
   "version": "0.0.1",
   "description": "Aqueduct: API and Socket client for ERC dEXCHANGE",
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "main": "./dist/generated/aqueduct.js",
+  "typings": "./dist/generated/aqueduct.d.ts",
   "repository": "github.com:ERCRelay/aqueduct.git",
   "author": "ERC dEx",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
     "start": "tsc -w",
-    "generate:client:local": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080"
+    "generate:client:local": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080",
+    "generate:docs": "npm run generate:client:local && rimraf ./docs/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/src/frames/typedoc ./src/generated/aqueduct.ts"
   },
   "dependencies": {
-    "@types/socket.io-client": "^1.4.31",
     "moment": "^2.19.1",
     "socket.io-client": "^2.0.3",
     "superagent": "^3.7.0"
   },
   "devDependencies": {
     "@types/handlebars": "^4.0.36",
+    "@types/socket.io-client": "^1.4.31",
     "@types/superagent": "^3.5.6",
     "@types/yargs": "^8.0.2",
     "handlebars": "^4.0.11",
     "ts-node": "^3.3.0",
+    "tslint": "^5.8.0",
+    "typedoc": "^0.9.0",
     "typescript": "^2.5.3",
     "yargs": "^9.0.1"
   }

@@ -1,5 +1,5 @@
-import * as request from 'superagent';
 import * as moment from 'moment';
+import * as request from 'superagent';
 
 export interface IRequestParams {
   method: string;
@@ -19,7 +19,7 @@ export abstract class ApiService {
         Object.keys(queryParameters).forEach(key => {
           const value = queryParameters[key];
           if (Object.prototype.toString.call(value) === '[object Date]') {
-            queryParameters[key] = moment(value as Date).format()
+            queryParameters[key] = moment(value as Date).format();
           }
         });
 

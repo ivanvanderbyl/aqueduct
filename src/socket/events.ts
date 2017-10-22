@@ -1,5 +1,5 @@
-import { Aqueduct } from '../generated/api';
-import * as io from 'socket.io-client';
+export interface Order {}
+declare const socket: any;
 
 /**
  * Namespace containinng socket related events
@@ -15,14 +15,8 @@ export namespace Events {
   }
 
   export interface IOrderChangeData {
-    order: Aqueduct.Order;
+    order: Order;
     eventType: 'created' | 'filled' | 'canceled' | 'partially-filled' | 'expired' | 'removed';
-  }
-
-  let socket: SocketIOClient.Socket | undefined;
-
-  export const Initialize = (baseUrl: string) => {
-    socket = io(baseUrl);
   }
 
   export abstract class SocketEvent<P, R> {
@@ -39,9 +33,8 @@ export namespace Events {
     public subscribe(params: P, cb: (data: R) => void) {
       this.params = params;
       this.callback = cb;
-      const validatedSocket = this.getSocket();
 
-      validatedSocket.emit('subscribe', {
+      socket.emit('subscribe', {
         key: this.key,
         publishTo: this.getListenerChannel(params),
         data: params
@@ -49,7 +42,7 @@ export namespace Events {
 
       const callback = (changeData: R) => cb(changeData)
 
-      validatedSocket.on(this.getListenerChannel(params), callback);
+      socket.on(this.getListenerChannel(params), callback);
 
       return this;
     }
@@ -58,24 +51,14 @@ export namespace Events {
      * Dispose of an active subscription
      */
     public unsubscribe() {
-      const validatedSocket = this.getSocket();
-
-      validatedSocket.off(this.getListenerChannel(this.params), this.callback);
-      validatedSocket.emit('unsubscribe', {
+      socket.off(this.getListenerChannel(this.params), this.callback);
+      socket.emit('unsubscribe', {
         key: this.key,
         data: this.params
       });
     }
 
     protected abstract getListenerChannel(params: P): string;
-
-    private getSocket() {
-      if (!socket) {
-        throw new Error('Aqueduct client must be initialized first; see the Aqueduct.Initialize method.');
-      }
-
-      return socket;
-    }
   }
 
   /**
