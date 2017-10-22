@@ -10,10 +10,11 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc -w",
-    "generate:client:local": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080",
-    "generate:docs": "rimraf docs && npm run build:docs-app && npm run generate:client:local && rimraf ./docs_src/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/frames/typedoc ./src/generated/aqueduct.ts && npm run rename:typedoc-html",
-    "build:docs-app": "cd docs_src && npm run build:prod",
-    "rename:typedoc-html": "rname docs/frames/typedoc/modules/_aqueduct_.aqueduct.html index.html"
+    "generate:client": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080",
+    "generate:docs": "npm run prepublish && rimraf ./docs/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/frames/typedoc ./src/generated/aqueduct.ts && npm run build:docs-app",
+    "build:docs-app": "cd docs && npm run build:prod",
+    "prepublish": "npm run generate:client && npm run build",
+    "fetch:swagger": "ts-node ./fetch-swagger --baseApiUrl=http://localhost:8080"
   },
   "dependencies": {
     "moment": "^2.19.1",
@@ -26,7 +27,6 @@
     "@types/superagent": "^3.5.6",
     "@types/yargs": "^8.0.2",
     "handlebars": "^4.0.11",
-    "rename-cli": "^4.0.1",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typedoc": "^0.9.0",

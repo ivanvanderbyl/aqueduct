@@ -1,7 +1,6 @@
 /* tslint:disable:no-console */
 import * as fs from 'fs';
 import * as handlebars from 'handlebars';
-import * as request from 'superagent';
 import * as yargs from 'yargs';
 import { ISchema } from './swagger';
 import * as Swagger from './swagger';
@@ -54,17 +53,6 @@ const baseApiUrl = yargs.argv.baseApiUrl;
 if (!baseApiUrl) {
   throw new Error('No baseApiUrl provided.');
 }
-
-const getSwaggerJson = () => {
-  return new Promise<Swagger.ISpec>((resolve, _reject) => {
-    request
-      .get(`${baseApiUrl}/swagger.json`)
-      .set('Accept', 'application/json')
-      .end((_, res) => {
-        resolve(res.body);
-      });
-  });
-};
 
 const template = (eventContent: string) => handlebars.compile(`/* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
@@ -393,9 +381,8 @@ const getEventContent = () => {
 
 (async () => {
   const eventContent = getEventContent();
-  const spec = await getSwaggerJson();
-  fs.writeFileSync('./docs/src/frames/swagger.json', JSON.stringify(spec));
-
+  // tslint:disable-next-line:no-require-imports
+  const spec = require('./swagger.json');
   try {
     const compiled = template(eventContent)(getTemplateView(spec));
     fs.writeFileSync(`${__dirname}/src/generated/aqueduct.ts`, compiled);
