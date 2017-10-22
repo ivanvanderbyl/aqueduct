@@ -1,6 +1,7 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/aqueduct
     docker:
       - image: 'ercdex/circleci:latest'
     branches:
