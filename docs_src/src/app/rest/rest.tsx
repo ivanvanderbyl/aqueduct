@@ -8,7 +8,7 @@ interface IRestProps {
 export class Rest extends React.Component<IRestProps> {
   public render() {
     return (
-      <iframe src='/frames/redoc.html' className='iframe-frame' />
+      <iframe src='./frames/redoc.html' className='iframe-frame' />
     );
   }
 }
