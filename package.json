@@ -10,9 +10,10 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc -w",
+    "start:docs": "npm run generate:docs && cd docs && npm start",
+    "build:docs": "npm run generate:docs && cd docs && npm run build:prod",
     "generate:client": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080",
-    "generate:docs": "npm run prepublish && rimraf ./docs/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/frames/typedoc ./src/generated/aqueduct.ts && npm run build:docs-app",
-    "build:docs-app": "cd docs && npm run build:prod",
+    "generate:docs": "npm run prepublish && rimraf ./docs/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/src/frames/typedoc ./src/generated/aqueduct.ts",
     "prepublish": "npm run generate:client && npm run build",
     "fetch:swagger": "ts-node ./fetch-swagger --baseApiUrl=http://localhost:8080"
   },

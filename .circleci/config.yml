@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: 'ercdex/circleci:latest'
+    branches:
+      only:
+        - master
+    steps:
+      - setup_remote_docker
+      - run:
+          command: |
+            echo ${GCLOUD_SERVICE_KEY} | base64 -i --decode > ./gcp-key.json
+            gcloud auth activate-service-account --key-file ./gcp-key.json
+
+            # build front-end
+            yarn
+            yarn build:docs
+
+            # deploy front-end      
+            gsutil rsync -d -r docs/dist gs://aqueduct.ercdex-staging.com
+            gsutil iam ch allUsers:objectViewer gs://aqueduct.ercdex-staging.com

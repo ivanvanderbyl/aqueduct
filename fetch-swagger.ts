@@ -23,4 +23,5 @@ const getSwaggerJson = () => {
 (async () => {
   const spec = await getSwaggerJson();
   fs.writeFileSync('./swagger.json', JSON.stringify(spec));
+  fs.writeFileSync('./docs/src/frames/swagger.json', JSON.stringify(spec));
 })();
