@@ -18,6 +18,9 @@ jobs:
 
             # build front-end
             yarn
+            cd docs
+            yarn
+            cd ..
             yarn build:docs
 
             # deploy front-end      
