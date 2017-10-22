@@ -3411,7 +3411,7 @@ var Client = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Client.prototype.render = function () {
-        return (React.createElement("iframe", { src: './frames/typedoc/modules/_aqueduct_.aqueduct.html', className: 'iframe-frame' }));
+        return (React.createElement("iframe", { src: './frames/typedoc/modules/index.html', className: 'iframe-frame' }));
     };
     return Client;
 }(React.Component));
@@ -5692,4 +5692,4 @@ module.exports = getActiveElement;
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=index.0846124b21a77baed89e.js.map.json
+//# sourceMappingURL=index.e0ac8a406e6ab961cda9.js.map.json
