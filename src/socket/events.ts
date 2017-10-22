@@ -1,8 +1,9 @@
+// tslint:disable-next-line:interface-name
 export interface Order {}
 declare const socket: any;
 
 /**
- * Namespace containinng socket related events
+ * Namespace contaiinng socket related events
  */
 export namespace Events {
   export interface IPairOrderChangeSubscriptionParams {
@@ -40,7 +41,7 @@ export namespace Events {
         data: params
       });
 
-      const callback = (changeData: R) => cb(changeData)
+      const callback = (changeData: R) => cb(changeData);
 
       socket.on(this.getListenerChannel(params), callback);
 
