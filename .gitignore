@@ -1,3 +1,4 @@
 node_modules
 dist/**
-docs/src/frames/typedoc
+docs/frames/typedoc
+docs/dist
