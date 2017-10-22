@@ -3,7 +3,7 @@ export interface Order {}
 declare const socket: any;
 
 /**
- * Namespace contaiinng socket related events
+ * Namespace containing socket related events
  */
 export namespace Events {
   export interface IPairOrderChangeSubscriptionParams {
