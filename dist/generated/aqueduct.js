@@ -152,7 +152,7 @@ var Aqueduct;
                             isAscending: params.isAscending,
                             sortOrder: params.sortOrder,
                             maker: params.maker,
-                            state: params.state,
+                            isOpen: params.isOpen,
                         };
                         return [2 /*return*/, this.executeRequest(requestParams)];
                     });
@@ -332,8 +332,9 @@ var Aqueduct;
         }(api_service_1.ApiService));
         Api.TokenPairsService = TokenPairsService;
     })(Api = Aqueduct.Api || (Aqueduct.Api = {}));
+    // tslint:disable-next-line:interface-name
     /**
-     * Namespace containinng socket related events
+     * Namespace containing socket related events
      */
     var Events;
     (function (Events) {

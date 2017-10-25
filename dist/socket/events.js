@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * Namespace containinng socket related events
+ * Namespace containing socket related events
  */
 var Events;
 (function (Events) {

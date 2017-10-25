@@ -321,10 +321,7 @@ Filled (2), Expired(3), Removed(4)
        * Address of maker
        */
       maker?: string;
-      /**
-       * State of order
-       */
-      state?: string;
+      isOpen?: boolean;
     }
 
     export interface IOrdersCreateParams {
@@ -464,7 +461,7 @@ Filled (2), Expired(3), Removed(4)
           isAscending: params.isAscending,
           sortOrder: params.sortOrder,
           maker: params.maker,
-          state: params.state,
+          isOpen: params.isOpen,
         };
         return this.executeRequest<Order[]>(requestParams);
       };
@@ -586,11 +583,12 @@ Filled (2), Expired(3), Removed(4)
     }
   }
 
-    
+    // tslint:disable-next-line:interface-name
+
 
 
 /**
- * Namespace containinng socket related events
+ * Namespace containing socket related events
  */
 export namespace Events {
   export interface IPairOrderChangeSubscriptionParams {
@@ -628,7 +626,7 @@ export namespace Events {
         data: params
       });
 
-      const callback = (changeData: R) => cb(changeData)
+      const callback = (changeData: R) => cb(changeData);
 
       socket.on(this.getListenerChannel(params), callback);
 

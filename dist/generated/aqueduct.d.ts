@@ -302,10 +302,7 @@ export declare namespace Aqueduct {
              * Address of maker
              */
             maker?: string;
-            /**
-             * State of order
-             */
-            state?: string;
+            isOpen?: boolean;
         }
         interface IOrdersCreateParams {
             request: ICreateOrderRequest;
@@ -450,7 +447,7 @@ export declare namespace Aqueduct {
         }
     }
     /**
-     * Namespace containinng socket related events
+     * Namespace containing socket related events
      */
     namespace Events {
         interface IPairOrderChangeSubscriptionParams {

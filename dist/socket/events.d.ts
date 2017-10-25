@@ -1,7 +1,7 @@
 export interface Order {
 }
 /**
- * Namespace containinng socket related events
+ * Namespace containing socket related events
  */
 export declare namespace Events {
     interface IPairOrderChangeSubscriptionParams {
