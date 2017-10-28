@@ -359,6 +359,8 @@ var Aqueduct;
         }(api_service_1.ApiService));
         Api.TokenPairsService = TokenPairsService;
     })(Api = Aqueduct.Api || (Aqueduct.Api = {}));
+    // tslint:disable-next-line:interface-name
+    // tslint:disable-next-line:interface-name
     /**
      * Namespace containing socket related events
      */

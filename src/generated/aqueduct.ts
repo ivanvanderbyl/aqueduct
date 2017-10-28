@@ -637,7 +637,7 @@ Filled (2), Expired(3), Removed(4)
     // tslint:disable-next-line:interface-name
 
 // tslint:disable-next-line:interface-name
-export interface Notification {}
+
 
 
 

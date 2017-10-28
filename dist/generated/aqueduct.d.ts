@@ -484,8 +484,6 @@ export declare namespace Aqueduct {
             get(params: ITokenPairsGetParams): Promise<ITokenPair[]>;
         }
     }
-    interface Notification {
-    }
     /**
      * Namespace containing socket related events
      */
