@@ -64,6 +64,20 @@ var Events;
     }(SocketEvent));
     Events.AccountOrderChanged = AccountOrderChanged;
     /**
+     * Subscribe/unsubscribe to events related to account notifications
+     */
+    var AccountNotification = /** @class */ (function (_super) {
+        __extends(AccountNotification, _super);
+        function AccountNotification() {
+            return _super.call(this, 'account-notification') || this;
+        }
+        AccountNotification.prototype.getListenerChannel = function (params) {
+            return "account-notification:" + params.account;
+        };
+        return AccountNotification;
+    }(SocketEvent));
+    Events.AccountNotification = AccountNotification;
+    /**
      * Subscribe/unsubscribe to events related to orders with a particular token pair
      */
     var TokenPairOrderChanged = /** @class */ (function (_super) {

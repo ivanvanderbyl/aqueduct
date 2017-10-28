@@ -1,5 +1,8 @@
 // tslint:disable-next-line:interface-name
 export interface Order {}
+// tslint:disable-next-line:interface-name
+export interface Notification {}
+
 declare const socket: any;
 
 /**
@@ -18,6 +21,14 @@ export namespace Events {
   export interface IOrderChangeData {
     order: Order;
     eventType: 'created' | 'filled' | 'canceled' | 'partially-filled' | 'expired' | 'removed';
+  }
+
+  export interface IAccountNotificationSubscriptionParams {
+    account: string;
+  }
+
+  export interface IAccountNotificationData {
+    notification: Notification;
   }
 
   export abstract class SocketEvent<P, R> {
@@ -72,6 +83,19 @@ export namespace Events {
 
     protected getListenerChannel(params: IAccountOrderChangeSubscriptionParams) {
       return `account-order-change:${params.account}`;
+    }
+  }
+
+  /**
+   * Subscribe/unsubscribe to events related to account notifications
+   */
+  export class AccountNotification extends SocketEvent<IAccountNotificationSubscriptionParams, IAccountNotificationData> {
+    constructor() {
+      super('account-notification');
+    }
+
+    protected getListenerChannel(params: IAccountNotificationSubscriptionParams) {
+      return `account-notification:${params.account}`;
     }
   }
 

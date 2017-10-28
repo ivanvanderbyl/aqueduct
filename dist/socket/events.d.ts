@@ -1,5 +1,7 @@
 export interface Order {
 }
+export interface Notification {
+}
 /**
  * Namespace containing socket related events
  */
@@ -14,6 +16,12 @@ export declare namespace Events {
     interface IOrderChangeData {
         order: Order;
         eventType: 'created' | 'filled' | 'canceled' | 'partially-filled' | 'expired' | 'removed';
+    }
+    interface IAccountNotificationSubscriptionParams {
+        account: string;
+    }
+    interface IAccountNotificationData {
+        notification: Notification;
     }
     abstract class SocketEvent<P, R> {
         private readonly key;
@@ -38,6 +46,13 @@ export declare namespace Events {
     class AccountOrderChanged extends SocketEvent<IAccountOrderChangeSubscriptionParams, IOrderChangeData> {
         constructor();
         protected getListenerChannel(params: IAccountOrderChangeSubscriptionParams): string;
+    }
+    /**
+     * Subscribe/unsubscribe to events related to account notifications
+     */
+    class AccountNotification extends SocketEvent<IAccountNotificationSubscriptionParams, IAccountNotificationData> {
+        constructor();
+        protected getListenerChannel(params: IAccountNotificationSubscriptionParams): string;
     }
     /**
      * Subscribe/unsubscribe to events related to orders with a particular token pair

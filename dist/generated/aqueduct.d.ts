@@ -57,6 +57,35 @@ export declare namespace Aqueduct {
         url: string;
     }
     /**
+     * A notification meant for consumption by clients
+     */
+    interface Notification {
+        /**
+         * Hex address of account associated with notification
+         */
+        account: string;
+        /**
+         * Text label of notification
+         */
+        label: string;
+        /**
+         * Date the notification expires
+         */
+        expirationDate: Date;
+        /**
+         * Unique Identifier
+         */
+        id: number;
+        /**
+         * Date of creation
+         */
+        dateCreated: Date;
+        /**
+         * Date of updated
+         */
+        dateUpdated: Date;
+    }
+    /**
      * An order that has been recorded on the ERC dEX Order Book
      */
     interface Order {
@@ -277,6 +306,9 @@ export declare namespace Aqueduct {
      * Namespace representing REST API for ERC dEX
      */
     namespace Api {
+        interface INotificationsGetParams {
+            account: string;
+        }
         interface IOrdersGetParams {
             /**
              * ID of Ethereum Network
@@ -403,6 +435,12 @@ export declare namespace Aqueduct {
              */
             getSupported(): Promise<INetwork[]>;
         }
+        class NotificationsService extends ApiService {
+            /**
+             * Get active notifications for an account
+             */
+            get(params: INotificationsGetParams): Promise<Notification[]>;
+        }
         class OrdersService extends ApiService {
             /**
              * Get list of orders
@@ -446,6 +484,8 @@ export declare namespace Aqueduct {
             get(params: ITokenPairsGetParams): Promise<ITokenPair[]>;
         }
     }
+    interface Notification {
+    }
     /**
      * Namespace containing socket related events
      */
@@ -460,6 +500,12 @@ export declare namespace Aqueduct {
         interface IOrderChangeData {
             order: Order;
             eventType: 'created' | 'filled' | 'canceled' | 'partially-filled' | 'expired' | 'removed';
+        }
+        interface IAccountNotificationSubscriptionParams {
+            account: string;
+        }
+        interface IAccountNotificationData {
+            notification: Notification;
         }
         abstract class SocketEvent<P, R> {
             private readonly key;
@@ -484,6 +530,13 @@ export declare namespace Aqueduct {
         class AccountOrderChanged extends SocketEvent<IAccountOrderChangeSubscriptionParams, IOrderChangeData> {
             constructor();
             protected getListenerChannel(params: IAccountOrderChangeSubscriptionParams): string;
+        }
+        /**
+         * Subscribe/unsubscribe to events related to account notifications
+         */
+        class AccountNotification extends SocketEvent<IAccountNotificationSubscriptionParams, IAccountNotificationData> {
+            constructor();
+            protected getListenerChannel(params: IAccountNotificationSubscriptionParams): string;
         }
         /**
          * Subscribe/unsubscribe to events related to orders with a particular token pair

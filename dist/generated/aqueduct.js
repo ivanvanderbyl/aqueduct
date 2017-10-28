@@ -129,6 +129,33 @@ var Aqueduct;
             return NetworksService;
         }(api_service_1.ApiService));
         Api.NetworksService = NetworksService;
+        var NotificationsService = /** @class */ (function (_super) {
+            __extends(NotificationsService, _super);
+            function NotificationsService() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            /**
+             * Get active notifications for an account
+             */
+            NotificationsService.prototype.get = function (params) {
+                return __awaiter(this, void 0, void 0, function () {
+                    var requestParams;
+                    return __generator(this, function (_a) {
+                        requestParams = {
+                            method: 'GET',
+                            url: baseUrl + "/v0/notifications"
+                        };
+                        requestParams.queryParameters = {
+                            account: params.account,
+                        };
+                        return [2 /*return*/, this.executeRequest(requestParams)];
+                    });
+                });
+            };
+            ;
+            return NotificationsService;
+        }(api_service_1.ApiService));
+        Api.NotificationsService = NotificationsService;
         var OrdersService = /** @class */ (function (_super) {
             __extends(OrdersService, _super);
             function OrdersService() {
@@ -332,7 +359,6 @@ var Aqueduct;
         }(api_service_1.ApiService));
         Api.TokenPairsService = TokenPairsService;
     })(Api = Aqueduct.Api || (Aqueduct.Api = {}));
-    // tslint:disable-next-line:interface-name
     /**
      * Namespace containing socket related events
      */
@@ -386,6 +412,20 @@ var Aqueduct;
             return AccountOrderChanged;
         }(SocketEvent));
         Events.AccountOrderChanged = AccountOrderChanged;
+        /**
+         * Subscribe/unsubscribe to events related to account notifications
+         */
+        var AccountNotification = /** @class */ (function (_super) {
+            __extends(AccountNotification, _super);
+            function AccountNotification() {
+                return _super.call(this, 'account-notification') || this;
+            }
+            AccountNotification.prototype.getListenerChannel = function (params) {
+                return "account-notification:" + params.account;
+            };
+            return AccountNotification;
+        }(SocketEvent));
+        Events.AccountNotification = AccountNotification;
         /**
          * Subscribe/unsubscribe to events related to orders with a particular token pair
          */

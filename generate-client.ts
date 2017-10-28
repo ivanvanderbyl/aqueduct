@@ -376,6 +376,7 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
 const getEventContent = () => {
   return fs.readFileSync('./src/socket/events.ts').toString()
     .replace('export interface Order {}', '')
+    .replace('export interface Notification {}', '')
     .replace('declare const socket: any;', '');
 };
 

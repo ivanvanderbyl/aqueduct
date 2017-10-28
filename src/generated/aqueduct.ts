@@ -68,6 +68,36 @@ export namespace Aqueduct {
   }
 
   /**
+   * A notification meant for consumption by clients
+   */
+  export interface Notification {
+    /**
+     * Hex address of account associated with notification
+     */
+    account: string;
+    /**
+     * Text label of notification
+     */
+    label: string;
+    /**
+     * Date the notification expires
+     */
+    expirationDate: Date;
+    /**
+     * Unique Identifier
+     */
+    id: number;
+    /**
+     * Date of creation
+     */
+    dateCreated: Date;
+    /**
+     * Date of updated
+     */
+    dateUpdated: Date;
+  }
+
+  /**
    * An order that has been recorded on the ERC dEX Order Book
    */
   export interface Order {
@@ -296,6 +326,10 @@ Filled (2), Expired(3), Removed(4)
    */
   export namespace Api {
 
+    export interface INotificationsGetParams {
+      account: string;
+    }
+
     export interface IOrdersGetParams {
       /**
        * ID of Ethereum Network
@@ -443,6 +477,23 @@ Filled (2), Expired(3), Removed(4)
         return this.executeRequest<INetwork[]>(requestParams);
       };
     }
+    export class NotificationsService extends ApiService {
+
+      /**
+       * Get active notifications for an account
+       */
+      public async get(params: INotificationsGetParams) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/v0/notifications`
+        };
+
+        requestParams.queryParameters = {
+          account: params.account,
+        };
+        return this.executeRequest<Notification[]>(requestParams);
+      };
+    }
     export class OrdersService extends ApiService {
 
       /**
@@ -585,6 +636,9 @@ Filled (2), Expired(3), Removed(4)
 
     // tslint:disable-next-line:interface-name
 
+// tslint:disable-next-line:interface-name
+export interface Notification {}
+
 
 
 /**
@@ -603,6 +657,14 @@ export namespace Events {
   export interface IOrderChangeData {
     order: Order;
     eventType: 'created' | 'filled' | 'canceled' | 'partially-filled' | 'expired' | 'removed';
+  }
+
+  export interface IAccountNotificationSubscriptionParams {
+    account: string;
+  }
+
+  export interface IAccountNotificationData {
+    notification: Notification;
   }
 
   export abstract class SocketEvent<P, R> {
@@ -657,6 +719,19 @@ export namespace Events {
 
     protected getListenerChannel(params: IAccountOrderChangeSubscriptionParams) {
       return `account-order-change:${params.account}`;
+    }
+  }
+
+  /**
+   * Subscribe/unsubscribe to events related to account notifications
+   */
+  export class AccountNotification extends SocketEvent<IAccountNotificationSubscriptionParams, IAccountNotificationData> {
+    constructor() {
+      super('account-notification');
+    }
+
+    protected getListenerChannel(params: IAccountNotificationSubscriptionParams) {
+      return `account-notification:${params.account}`;
     }
   }
 
