@@ -4,7 +4,10 @@
   "description": "Aqueduct: API and Socket client for ERC dEXCHANGE",
   "main": "./dist/generated/aqueduct.js",
   "typings": "./dist/generated/aqueduct.d.ts",
-  "repository": "github.com:ERCdEX/aqueduct.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ERCdEX/aqueduct.git"
+  },
   "author": "ERC dEx",
   "license": "MIT",
   "scripts": {
