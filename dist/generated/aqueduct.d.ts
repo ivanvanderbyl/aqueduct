@@ -859,7 +859,7 @@ export declare namespace Aqueduct {
         /**
          * Taker events related to a token pair
          */
-        class TakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {
+        class PairTakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {
             protected path: string;
         }
     }

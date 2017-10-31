@@ -1061,8 +1061,8 @@ export interface Order {
     /**
      * Taker events related to a token pair
      */
-    export class TakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {
-      protected path = 'pair-token-event/:makerTokenAddress/:takerTokenAddress';
+    export class PairTakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {
+      protected path = 'pair-taker-event/:makerTokenAddress/:takerTokenAddress';
     }
   }
 }

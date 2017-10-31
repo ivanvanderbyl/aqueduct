@@ -444,16 +444,16 @@ var Aqueduct;
         /**
          * Taker events related to a token pair
          */
-        var TakerEvent = /** @class */ (function (_super) {
-            __extends(TakerEvent, _super);
-            function TakerEvent() {
+        var PairTakerEvent = /** @class */ (function (_super) {
+            __extends(PairTakerEvent, _super);
+            function PairTakerEvent() {
                 var _this = _super !== null && _super.apply(this, arguments) || this;
-                _this.path = 'pair-token-event/:makerTokenAddress/:takerTokenAddress';
+                _this.path = 'pair-taker-event/:makerTokenAddress/:takerTokenAddress';
                 return _this;
             }
-            return TakerEvent;
+            return PairTakerEvent;
         }(SocketEvent));
-        Events.TakerEvent = TakerEvent;
+        Events.PairTakerEvent = PairTakerEvent;
     })(Events = Aqueduct.Events || (Aqueduct.Events = {}));
 })(Aqueduct = exports.Aqueduct || (exports.Aqueduct = {}));
 //# sourceMappingURL=aqueduct.js.map
