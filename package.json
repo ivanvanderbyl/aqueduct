@@ -1,10 +1,10 @@
 {
   "name": "aqueduct",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Aqueduct: API and Socket client for ERC dEXCHANGE",
   "main": "./dist/generated/aqueduct.js",
   "typings": "./dist/generated/aqueduct.d.ts",
-  "repository": "github.com:ERCRelay/aqueduct.git",
+  "repository": "github.com:ERCdEX/aqueduct.git",
   "author": "ERC dEx",
   "license": "MIT",
   "scripts": {
@@ -20,7 +20,6 @@
     "fetch:events": "ts-node ./events/fetch-events --baseApiUrl=http://localhost:8080"
   },
   "dependencies": {
-    "json-schema-to-typescript": "^4.6.5",
     "moment": "^2.19.1",
     "socket.io-client": "^2.0.3",
     "superagent": "^3.7.0"
@@ -30,6 +29,7 @@
     "@types/socket.io-client": "^1.4.31",
     "@types/superagent": "^3.5.6",
     "@types/yargs": "^8.0.2",
+    "json-schema-to-typescript": "^4.6.5",
     "handlebars": "^4.0.11",
     "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
