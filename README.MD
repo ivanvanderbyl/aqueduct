@@ -2,7 +2,7 @@
 
 ## Background
 
-- The Aqueduct Client is for (http://0xproject.com)[Øx relayers] to use to share liquidity with one another
+- The Aqueduct Client is for [Øx relayers](http://0xproject.com) to use to share liquidity with one another
 
 ## Goals
 
