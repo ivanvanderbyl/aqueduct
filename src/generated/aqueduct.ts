@@ -32,299 +32,301 @@ export namespace Aqueduct {
   };
 
   /**
-   * Fee structure
-   */
-  export interface IFees {
-    /**
-     * Fee recipient - generally the address of the relayer
-     */
-    feeRecipient: string;
-    /**
-     * Fee owed by maker
-     */
-    makerFee: string;
-    /**
-     * Fee owed by taker
-     */
-    takerFee: string;
-  }
-
-  /**
-   * Ethereum network description
-   */
-  export interface INetwork {
-    /**
-     * Unique identifier of network
-     */
-    id: number;
-    /**
-     * Long description of network
-     */
-    label: string;
-    /**
-     * Network endpoint
-     */
-    url: string;
-  }
-
-  /**
-   * A notification meant for consumption by clients
-   */
-  export interface Notification {
-    /**
-     * Hex address of account associated with notification
-     */
-    account: string;
-    /**
-     * Text label of notification
-     */
-    label: string;
-    /**
-     * Date the notification expires
-     */
-    expirationDate: Date;
-    /**
-     * Unique Identifier
-     */
-    id: number;
-    /**
-     * Date of creation
-     */
-    dateCreated: Date;
-    /**
-     * Date of updated
-     */
-    dateUpdated: Date;
-  }
-
-  /**
-   * An order that has been recorded on the ERC dEX Order Book
-   */
-  export interface Order {
-    /**
-     * Date on which the order was closed through fill, cancel, etc
-     */
-    dateClosed: Date;
-    /**
-     * ID of the Ethereum network the order is associated with
-     */
-    networkId: number;
-    /**
-     * 0x Exchange Contract Address
-     */
-    exchangeContractAddress: string;
-    /**
-     * Unix timestamp of order expiration (in seconds)
-     */
-    expirationUnixTimestampSec: number;
-    /**
-     * Address of the fee recipient
-     */
-    feeRecipient: string;
-    /**
-     * Address of the order maker
-     */
-    maker: string;
-    /**
-     * Fee due from maker on order fill
-     */
-    makerFee: string;
-    /**
-     * Token address of the maker token
-     */
-    makerTokenAddress: string;
-    /**
-     * Total amount of maker token in order
-     */
-    makerTokenAmount: string;
-    /**
-     * Secure salt
-     */
-    salt: string;
-    /**
-     * Serialized version of the EC signature for signed orders
-     */
-    serializedEcSignature: string;
-    /**
-     * Taker address; generally a null taker
-     */
-    taker: string;
-    /**
-     * Fee due from taker on order fill
-     */
-    takerFee: string;
-    /**
-     * Token address of the taker token
-     */
-    takerTokenAddress: string;
-    /**
-     * Total amount of taker token in order
-     */
-    takerTokenAmount: string;
-    /**
-     * Remaining amount in the order in terms of taker token units
-     */
-    remainingTakerTokenAmount: string;
-    /**
-     * The hash of the signed order
-     */
-    orderHash: string;
-    /**
-     * State of the order: Open (0), Canceled (1),
-Filled (2), Expired(3), Removed(4)
-     */
-    state: number;
-    takerEvents: TakerEvent[];
-    /**
-     * Unique Identifier
-     */
-    id: number;
-    /**
-     * Date of creation
-     */
-    dateCreated: Date;
-    /**
-     * Date of updated
-     */
-    dateUpdated: Date;
-  }
-
-  export interface TakerEvent {
-    /**
-     * ID of the associated order
-     */
-    orderId: number;
-    /**
-     * Amount filled on the order
-     */
-    takerAmount: string;
-    /**
-     * Address of the order taker
-     */
-    taker: string;
-    /**
-     * Associated transaction hash of fill event
-     */
-    txHash: string;
-    order: Order;
-    /**
-     * Unique Identifier
-     */
-    id: number;
-    /**
-     * Date of creation
-     */
-    dateCreated: Date;
-    /**
-     * Date of updated
-     */
-    dateUpdated: Date;
-  }
-
-  /**
-   * Elliptic Curve Digital Signature
-   */
-  export interface IEcSignature {
-    v: number;
-    r: string;
-    s: string;
-  }
-
-  export interface ICreateOrderRequest {
-    /**
-     * Order maker
-     */
-    maker: string;
-    /**
-     * Order taker; should generally be the null address (0x000...) in the case of ERC dEX
-     */
-    taker: string;
-    /**
-     * Amount of maker token in trade
-     */
-    makerTokenAmount: string;
-    /**
-     * Amount of taker token in trade
-     */
-    takerTokenAmount: string;
-    /**
-     * Fee owed by maker
-     */
-    makerFee: string;
-    /**
-     * Fee owed by taker
-     */
-    takerFee: string;
-    /**
-     * Address of maker token
-     */
-    makerTokenAddress: string;
-    /**
-     * Address of taker token
-     */
-    takerTokenAddress: string;
-    /**
-     * Secure salt
-     */
-    salt: string;
-    /**
-     * Recipient of owed fees
-     */
-    feeRecipient: string;
-    /**
-     * Address of 0x exchange contract
-     */
-    exchangeContractAddress: string;
-    /**
-     * Unix timestamp when order expires
-     */
-    expirationUnixTimestampSec: number;
-    /**
-     * Secure hash of signed order
-     */
-    orderHash: string;
-    /**
-     * ID of Ethereum network
-     */
-    networkId: number;
-    /**
-     * Secure EC Signature
-     */
-    ecSignature: IEcSignature;
-  }
-
-  export interface IDateSummary {
-    date: Date;
-    low?: number;
-    high?: number;
-    open?: number;
-    close?: number;
-    volume?: number;
-  }
-
-  export interface IToken {
-    name: string;
-    address: string;
-    symbol: string;
-    decimals: number;
-  }
-
-  export interface ITokenPair {
-    tokenA: IToken;
-    tokenB: IToken;
-  }
-
-  export interface ITokenPairSummary {
-    tokenPair: ITokenPair;
-    lastPrice?: string;
-    netChange?: string;
-    bid?: string;
-    ask?: string;
-  }
-  /**
    * Namespace representing REST API for ERC dEX
    */
   export namespace Api {
+
+    /**
+     * Fee structure
+     */
+    export interface IFees {
+      /**
+       * Fee recipient - generally the address of the relayer
+       */
+      feeRecipient: string;
+      /**
+       * Fee owed by maker
+       */
+      makerFee: string;
+      /**
+       * Fee owed by taker
+       */
+      takerFee: string;
+    }
+
+    /**
+     * Ethereum network description
+     */
+    export interface INetwork {
+      /**
+       * Unique identifier of network
+       */
+      id: number;
+      /**
+       * Long description of network
+       */
+      label: string;
+      /**
+       * Network endpoint
+       */
+      url: string;
+    }
+
+    /**
+     * A notification meant for consumption by clients
+     */
+    export interface Notification {
+      /**
+       * Hex address of account associated with notification
+       */
+      account: string;
+      /**
+       * Text label of notification
+       */
+      label: string;
+      /**
+       * Date the notification expires
+       */
+      expirationDate: Date;
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+    }
+
+    /**
+     * An order that has been recorded on the ERC dEX Order Book
+     */
+    export interface Order {
+      /**
+       * Date on which the order was closed through fill, cancel, etc
+       */
+      dateClosed: Date;
+      /**
+       * ID of the Ethereum network the order is associated with
+       */
+      networkId: number;
+      /**
+       * 0x Exchange Contract Address
+       */
+      exchangeContractAddress: string;
+      /**
+       * Unix timestamp of order expiration (in seconds)
+       */
+      expirationUnixTimestampSec: number;
+      /**
+       * Address of the fee recipient
+       */
+      feeRecipient: string;
+      /**
+       * Address of the order maker
+       */
+      maker: string;
+      /**
+       * Fee due from maker on order fill
+       */
+      makerFee: string;
+      /**
+       * Token address of the maker token
+       */
+      makerTokenAddress: string;
+      /**
+       * Total amount of maker token in order
+       */
+      makerTokenAmount: string;
+      /**
+       * Secure salt
+       */
+      salt: string;
+      /**
+       * Serialized version of the EC signature for signed orders
+       */
+      serializedEcSignature: string;
+      /**
+       * Taker address; generally a null taker
+       */
+      taker: string;
+      /**
+       * Fee due from taker on order fill
+       */
+      takerFee: string;
+      /**
+       * Token address of the taker token
+       */
+      takerTokenAddress: string;
+      /**
+       * Total amount of taker token in order
+       */
+      takerTokenAmount: string;
+      /**
+       * Remaining amount in the order in terms of taker token units
+       */
+      remainingTakerTokenAmount: string;
+      /**
+       * The hash of the signed order
+       */
+      orderHash: string;
+      /**
+       * State of the order: Open (0), Canceled (1),
+Filled (2), Expired(3), Removed(4)
+       */
+      state: number;
+      takerEvents: TakerEvent[];
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+    }
+
+    export interface TakerEvent {
+      /**
+       * ID of the associated order
+       */
+      orderId: number;
+      /**
+       * Amount filled on the order
+       */
+      takerAmount: string;
+      /**
+       * Address of the order taker
+       */
+      taker: string;
+      /**
+       * Associated transaction hash of fill event
+       */
+      txHash: string;
+      order: Order;
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+    }
+
+    /**
+     * Elliptic Curve Digital Signature
+     */
+    export interface IEcSignature {
+      v: number;
+      r: string;
+      s: string;
+    }
+
+    export interface ICreateOrderRequest {
+      /**
+       * Order maker
+       */
+      maker: string;
+      /**
+       * Order taker; should generally be the null address (0x000...) in the case of ERC dEX
+       */
+      taker: string;
+      /**
+       * Amount of maker token in trade
+       */
+      makerTokenAmount: string;
+      /**
+       * Amount of taker token in trade
+       */
+      takerTokenAmount: string;
+      /**
+       * Fee owed by maker
+       */
+      makerFee: string;
+      /**
+       * Fee owed by taker
+       */
+      takerFee: string;
+      /**
+       * Address of maker token
+       */
+      makerTokenAddress: string;
+      /**
+       * Address of taker token
+       */
+      takerTokenAddress: string;
+      /**
+       * Secure salt
+       */
+      salt: string;
+      /**
+       * Recipient of owed fees
+       */
+      feeRecipient: string;
+      /**
+       * Address of 0x exchange contract
+       */
+      exchangeContractAddress: string;
+      /**
+       * Unix timestamp when order expires
+       */
+      expirationUnixTimestampSec: number;
+      /**
+       * Secure hash of signed order
+       */
+      orderHash: string;
+      /**
+       * ID of Ethereum network
+       */
+      networkId: number;
+      /**
+       * Secure EC Signature
+       */
+      ecSignature: IEcSignature;
+    }
+
+    export interface IDateSummary {
+      date: Date;
+      low?: number;
+      high?: number;
+      open?: number;
+      close?: number;
+      volume?: number;
+    }
+
+    export interface IToken {
+      name: string;
+      address: string;
+      symbol: string;
+      decimals: number;
+    }
+
+    export interface ITokenPair {
+      tokenA: IToken;
+      tokenB: IToken;
+    }
+
+    export interface ITokenPairSummary {
+      tokenPair: ITokenPair;
+      lastPrice?: string;
+      netChange?: string;
+      bid?: string;
+      ask?: string;
+    }
+
 
     export interface INotificationsGetParams {
       account: string;
@@ -634,119 +636,433 @@ Filled (2), Expired(3), Removed(4)
     }
   }
 
-    // tslint:disable-next-line:interface-name
+  /**
+   * Namespace containing socket related events
+   */
+  export namespace Events {
+    /* tslint:disable *//**
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
 
-// tslint:disable-next-line:interface-name
-
-
-
-
+export interface IPairOrderChangeEventParams {
+  makerTokenAddress: string;
+  takerTokenAddress: string;
+  
+}
 /**
- * Namespace containing socket related events
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
+
+export interface IOrderChangeEventData {
+  order: Order;
+  eventType: ("canceled" | "created" | "expired" | "filled" | "partially-filled" | "removed");
+  reason?: string;
+  
+}
+/**
+ * An order that has been recorded on the ERC dEX Order Book
  */
-export namespace Events {
-  export interface IPairOrderChangeSubscriptionParams {
-    makerTokenAddress: string;
-    takerTokenAddress: string;
-  }
-
-  export interface IAccountOrderChangeSubscriptionParams {
-    account: string;
-  }
-
-  export interface IOrderChangeData {
-    order: Order;
-    eventType: 'created' | 'filled' | 'canceled' | 'partially-filled' | 'expired' | 'removed';
-  }
-
-  export interface IAccountNotificationSubscriptionParams {
-    account: string;
-  }
-
-  export interface IAccountNotificationData {
-    notification: Notification;
-  }
-
-  export abstract class SocketEvent<P, R> {
-    private params: P;
-    private callback: (data: R) => void;
-
-    constructor(private readonly key: string) { }
-
-    /**
-     * Subscribe to this event
-     * @param params Payload to submit to the server
-     * @param cb Handler for event broadcasts
-     */
-    public subscribe(params: P, cb: (data: R) => void) {
-      this.params = params;
-      this.callback = cb;
-
-      socket.emit('subscribe', {
-        key: this.key,
-        publishTo: this.getListenerChannel(params),
-        data: params
-      });
-
-      const callback = (changeData: R) => cb(changeData);
-
-      socket.on(this.getListenerChannel(params), callback);
-
-      return this;
-    }
-
-    /**
-     * Dispose of an active subscription
-     */
-    public unsubscribe() {
-      socket.off(this.getListenerChannel(this.params), this.callback);
-      socket.emit('unsubscribe', {
-        key: this.key,
-        data: this.params
-      });
-    }
-
-    protected abstract getListenerChannel(params: P): string;
-  }
-
+export interface Order {
   /**
-   * Subscribe/unsubscribe to events related to orders with a particular maker
+   * Enables basic storage and retrieval of dates and times.
    */
-  export class AccountOrderChanged extends SocketEvent<IAccountOrderChangeSubscriptionParams, IOrderChangeData> {
-    constructor() {
-      super('account-order-change');
-    }
-
-    protected getListenerChannel(params: IAccountOrderChangeSubscriptionParams) {
-      return `account-order-change:${params.account}`;
-    }
-  }
-
+  dateClosed: Date;
   /**
-   * Subscribe/unsubscribe to events related to account notifications
+   * ID of the Ethereum network the order is associated with
    */
-  export class AccountNotification extends SocketEvent<IAccountNotificationSubscriptionParams, IAccountNotificationData> {
-    constructor() {
-      super('account-notification');
-    }
-
-    protected getListenerChannel(params: IAccountNotificationSubscriptionParams) {
-      return `account-notification:${params.account}`;
-    }
-  }
-
+  networkId: number;
   /**
-   * Subscribe/unsubscribe to events related to orders with a particular token pair
+   * 0x Exchange Contract Address
    */
-  export class TokenPairOrderChanged extends SocketEvent<IPairOrderChangeSubscriptionParams, IOrderChangeData> {
-    constructor() {
-      super('pair-order-change');
-    }
+  exchangeContractAddress: string;
+  /**
+   * Unix timestamp of order expiration (in seconds)
+   */
+  expirationUnixTimestampSec: number;
+  /**
+   * Address of the fee recipient
+   */
+  feeRecipient: string;
+  /**
+   * Address of the order maker
+   */
+  maker: string;
+  /**
+   * Fee due from maker on order fill
+   */
+  makerFee: string;
+  /**
+   * Token address of the maker token
+   */
+  makerTokenAddress: string;
+  /**
+   * Total amount of maker token in order
+   */
+  makerTokenAmount: string;
+  /**
+   * Secure salt
+   */
+  salt: string;
+  /**
+   * Serialized version of the EC signature for signed orders
+   */
+  serializedEcSignature: string;
+  /**
+   * Taker address; generally a null taker
+   */
+  taker: string;
+  /**
+   * Fee due from taker on order fill
+   */
+  takerFee: string;
+  /**
+   * Token address of the taker token
+   */
+  takerTokenAddress: string;
+  /**
+   * Total amount of taker token in order
+   */
+  takerTokenAmount: string;
+  /**
+   * Remaining amount in the order in terms of taker token units
+   */
+  remainingTakerTokenAmount: string;
+  /**
+   * The hash of the signed order
+   */
+  orderHash: string;
+  /**
+   * State of the order: Open (0), Canceled (1),
+   * Filled (2), Expired(3), Removed(4)
+   */
+  state: number;
+  takerEvents: TakerEvent[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface TakerEvent {
+  /**
+   * ID of the associated order
+   */
+  orderId: number;
+  /**
+   * Amount filled on the order
+   */
+  takerAmount: string;
+  /**
+   * Address of the order taker
+   */
+  taker: string;
+  /**
+   * Associated transaction hash of fill event
+   */
+  txHash: string;
+  order: Order;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+/**
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
 
-    protected getListenerChannel(params: IPairOrderChangeSubscriptionParams) {
-      return `pair-order-change:${params.makerTokenAddress}:${params.takerTokenAddress}`;
-    }
-  }
+export interface IAccountOrderChangeEventParams {
+  account: string;
+  
+}
+/**
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
+
+export interface IAccountNotificationEventParams {
+  account: string;
+  
+}
+/**
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
+
+export interface IAccountNotificationEventData {
+  notification: Notification;
+  
+}
+/**
+ * A notification meant for consumption by clients
+ */
+export interface Notification {
+  /**
+   * Hex address of account associated with notification
+   */
+  account: string;
+  /**
+   * Text label of notification
+   */
+  label: string;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  expirationDate: Date;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+/**
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
+
+export interface IPairTakerEventEventParams {
+  makerTokenAddress: string;
+  takerTokenAddress: string;
+  
+}
+/**
+* This file was automatically generated by json-schema-to-typescript.
+* DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+* and run json-schema-to-typescript to regenerate this file.
+*/
+
+export interface IPairTakerEventEventData {
+  takerEvent: TakerEvent;
+  eventType: "created";
+  
+}
+export interface TakerEvent {
+  /**
+   * ID of the associated order
+   */
+  orderId: number;
+  /**
+   * Amount filled on the order
+   */
+  takerAmount: string;
+  /**
+   * Address of the order taker
+   */
+  taker: string;
+  /**
+   * Associated transaction hash of fill event
+   */
+  txHash: string;
+  order: Order;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+/**
+ * An order that has been recorded on the ERC dEX Order Book
+ */
+export interface Order {
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateClosed: Date;
+  /**
+   * ID of the Ethereum network the order is associated with
+   */
+  networkId: number;
+  /**
+   * 0x Exchange Contract Address
+   */
+  exchangeContractAddress: string;
+  /**
+   * Unix timestamp of order expiration (in seconds)
+   */
+  expirationUnixTimestampSec: number;
+  /**
+   * Address of the fee recipient
+   */
+  feeRecipient: string;
+  /**
+   * Address of the order maker
+   */
+  maker: string;
+  /**
+   * Fee due from maker on order fill
+   */
+  makerFee: string;
+  /**
+   * Token address of the maker token
+   */
+  makerTokenAddress: string;
+  /**
+   * Total amount of maker token in order
+   */
+  makerTokenAmount: string;
+  /**
+   * Secure salt
+   */
+  salt: string;
+  /**
+   * Serialized version of the EC signature for signed orders
+   */
+  serializedEcSignature: string;
+  /**
+   * Taker address; generally a null taker
+   */
+  taker: string;
+  /**
+   * Fee due from taker on order fill
+   */
+  takerFee: string;
+  /**
+   * Token address of the taker token
+   */
+  takerTokenAddress: string;
+  /**
+   * Total amount of taker token in order
+   */
+  takerTokenAmount: string;
+  /**
+   * Remaining amount in the order in terms of taker token units
+   */
+  remainingTakerTokenAmount: string;
+  /**
+   * The hash of the signed order
+   */
+  orderHash: string;
+  /**
+   * State of the order: Open (0), Canceled (1),
+   * Filled (2), Expired(3), Removed(4)
+   */
+  state: number;
+  takerEvents: TakerEvent[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
 }
 
+
+    export abstract class SocketEvent<P, R> {
+      protected abstract path: string;
+      private params: P;
+      private callback: (data: R) => void;
+
+      /**
+       * Subscribe to this event
+       * @param params Payload to submit to the server
+       * @param cb Handler for event broadcasts
+       */
+      public subscribe(params: P, cb: (data: R) => void) {
+        this.params = params;
+        this.callback = cb;
+
+        socket.emit('subscribe', this.getChannel(params));
+
+        const callback = (changeData: R) => cb(changeData);
+
+        socket.on(this.getChannel(params), callback);
+
+        return this;
+      }
+
+      /**
+       * Dispose of an active subscription
+       */
+      public unsubscribe() {
+        socket.off(this.getChannel(this.params), this.callback);
+        socket.emit('unsubscribe', this.getChannel(this.params));
+      }
+
+      private getChannel(params: P) {
+        let channel = this.path;
+
+        Object.keys(params).forEach(k => {
+          channel = channel.replace(`:${k}`, params[k]);
+        });
+
+        return channel;
+      }
+    }
+
+    /**
+     * Order changes relating to a token pair
+     */
+    export class PairOrderChange extends SocketEvent<IPairOrderChangeEventParams, IOrderChangeEventData> {
+      protected path = 'pair-order-change/:makerTokenAddress/:takerTokenAddress';
+    }
+
+    /**
+     * Order changes related to an account address
+     */
+    export class AccountOrderChange extends SocketEvent<IAccountOrderChangeEventParams, IOrderChangeEventData> {
+      protected path = 'account-order-change/:account';
+    }
+
+    /**
+     * Notifications related to an account address
+     */
+    export class AccountNotification extends SocketEvent<IAccountNotificationEventParams, IAccountNotificationEventData> {
+      protected path = 'account-notification/:account';
+    }
+
+    /**
+     * Taker events related to a token pair
+     */
+    export class TakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {
+      protected path = 'pair-token-event/:makerTokenAddress/:takerTokenAddress';
+    }
+  }
 }

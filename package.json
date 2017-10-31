@@ -11,14 +11,16 @@
     "build": "tsc",
     "start": "tsc -w",
     "build:lib": "rimraf dist && npm run generate:client && npm run build",
-    "build:lib:fresh": "npm run fetch:swagger && npm run build:lib",
+    "build:lib:fresh": "npm run fetch:swagger && npm run fetch:events && npm run build:lib",
     "start:docs": "npm run generate:docs && cd docs && npm start",
     "build:docs": "npm run generate:docs && cd docs && npm run build:prod",
     "generate:client": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080",
     "generate:docs": "npm run build:lib && rimraf ./docs/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/src/frames/typedoc ./src/generated/aqueduct.ts",
-    "fetch:swagger": "ts-node ./fetch-swagger --baseApiUrl=http://localhost:8080"
+    "fetch:swagger": "ts-node ./fetch-swagger --baseApiUrl=http://localhost:8080",
+    "fetch:events": "ts-node ./events/fetch-events --baseApiUrl=http://localhost:8080"
   },
   "dependencies": {
+    "json-schema-to-typescript": "^4.6.5",
     "moment": "^2.19.1",
     "socket.io-client": "^2.0.3",
     "superagent": "^3.7.0"

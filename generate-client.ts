@@ -1,11 +1,28 @@
 /* tslint:disable:no-console */
 import * as fs from 'fs';
 import * as handlebars from 'handlebars';
+import { compile } from 'json-schema-to-typescript';
 import * as yargs from 'yargs';
 import { ISchema } from './swagger';
 import * as Swagger from './swagger';
 
+interface IEvent {
+  path: string;
+  description: string;
+  operation: string;
+  params: string;
+  returns: string;
+}
+
+export interface IEventsSchema {
+  events: IEvent[];
+  schema: {
+    title: string;
+  }[];
+}
+
 interface ITemplateView {
+  events: IEvent[];
   services: ITemplateService[];
   models: ITemplateModel[];
   baseUrl: string;
@@ -54,7 +71,7 @@ if (!baseApiUrl) {
   throw new Error('No baseApiUrl provided.');
 }
 
-const template = (eventContent: string) => handlebars.compile(`/* tslint:disable */
+const template = (eventModelContent: string) => handlebars.compile(`/* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
 import * as io from 'socket.io-client';
 
@@ -86,28 +103,30 @@ export namespace Aqueduct {
     apiKey = params.apiKey;
     socket = io(baseUrl);
   };
-  {{#models}}
 
-  {{#if description}}
   /**
-   * {{description}}
+   * Namespace representing REST API for ERC dEX
    */
-  {{/if}}
-  export interface {{name}} {
-    {{#properties}}
+  export namespace Api {
+    {{#models}}
+
     {{#if description}}
     /**
      * {{description}}
      */
     {{/if}}
-    {{propertyName}}: {{propertyType}};
-    {{/properties}}
-  }
-  {{/models}}
-  /**
-   * Namespace representing REST API for ERC dEX
-   */
-  export namespace Api {
+    export interface {{name}} {
+      {{#properties}}
+      {{#if description}}
+      /**
+       * {{description}}
+       */
+      {{/if}}
+      {{propertyName}}: {{propertyType}};
+      {{/properties}}
+    }
+    {{/models}}
+
     {{#services}}
     {{#operations}}
     {{#if hasParameters}}
@@ -158,7 +177,63 @@ export namespace Aqueduct {
     {{/services}}
   }
 
-    ${eventContent}
+  /**
+   * Namespace containing socket related events
+   */
+  export namespace Events {
+    ${eventModelContent}
+
+    export abstract class SocketEvent<P, R> {
+      protected abstract path: string;
+      private params: P;
+      private callback: (data: R) => void;
+
+      /**
+       * Subscribe to this event
+       * @param params Payload to submit to the server
+       * @param cb Handler for event broadcasts
+       */
+      public subscribe(params: P, cb: (data: R) => void) {
+        this.params = params;
+        this.callback = cb;
+
+        socket.emit('subscribe', this.getChannel(params));
+
+        const callback = (changeData: R) => cb(changeData);
+
+        socket.on(this.getChannel(params), callback);
+
+        return this;
+      }
+
+      /**
+       * Dispose of an active subscription
+       */
+      public unsubscribe() {
+        socket.off(this.getChannel(this.params), this.callback);
+        socket.emit('unsubscribe', this.getChannel(this.params));
+      }
+
+      private getChannel(params: P) {
+        let channel = this.path;
+
+        Object.keys(params).forEach(k => {
+          channel = channel.replace(\`:\${k}\`, params[k]);
+        });
+
+        return channel;
+      }
+    }
+    {{#events}}
+
+    /**
+     * {{description}}
+     */
+    export class {{operation}} extends SocketEvent<{{params}}, {{returns}}> {
+      protected path = '{{path}}';
+    }
+    {{/events}}
+  }
 }
 `);
 
@@ -251,7 +326,7 @@ const getNormalizedDefinitionKey = (key: string) => {
   return key.replace('[', '').replace(']', '');
 };
 
-const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
+const getTemplateView = (swagger: Swagger.ISpec, eventSchema: IEventsSchema): ITemplateView => {
   const definitions = swagger.definitions;
   if (!definitions) { throw new Error('No definitions.'); }
 
@@ -342,6 +417,7 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
     });
 
   return {
+    events: eventSchema.events,
     baseUrl: baseApiUrl,
     apiPath: swagger.basePath as string,
     services: Object.keys(serviceMap).map(key => serviceMap[key]),
@@ -373,19 +449,40 @@ const getTemplateView = (swagger: Swagger.ISpec): ITemplateView => {
   };
 };
 
-const getEventContent = () => {
-  return fs.readFileSync('./src/socket/events.ts').toString()
-    .replace('export interface Order {}', '')
-    .replace('export interface Notification {}', '')
-    .replace('declare const socket: any;', '');
+const replaceAll = (value: string, pattern: string, replacement: string) => {
+  return value.split(pattern).join(replacement);
 };
 
 (async () => {
-  const eventContent = getEventContent();
-  // tslint:disable-next-line:no-require-imports
+  // tslint:disable-next-line
   const spec = require('./swagger.json');
+
+  // tslint:disable-next-line
+  const eventSchema = require('./events.json') as IEventsSchema;
+
+  let modelsContent = '/* tslint:disable */';
+
+  for (const s of eventSchema.schema) {
+    const content = await compile(s, s.title, {
+      declareExternallyReferenced: true
+    });
+
+    modelsContent += content;
+  }
+
+  let eventModelContent = replaceAll(modelsContent, '[k: string]: any;', '');
+  eventModelContent = replaceAll(eventModelContent, 'expirationDate: string;', 'expirationDate: Date;');
+  eventModelContent = replaceAll(eventModelContent, 'dateCreated: string;', 'dateCreated: Date;');
+  eventModelContent = replaceAll(eventModelContent, 'dateClosed: string;', 'dateClosed: Date;');
+  eventModelContent = replaceAll(eventModelContent, 'dateUpdated: string;', 'dateUpdated: Date;');
+  eventModelContent = replaceAll(eventModelContent, `/**
+  * This file was automatically generated by json-schema-to-typescript.
+  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSONSchema file,
+  * and run json-schema-to-typescript to regenerate this file.
+  */`, '');
+
   try {
-    const compiled = template(eventContent)(getTemplateView(spec));
+    const compiled = template(eventModelContent)(getTemplateView(spec, eventSchema));
     fs.writeFileSync(`${__dirname}/src/generated/aqueduct.ts`, compiled);
     console.log('Api file generated!');
   } catch (err) {
