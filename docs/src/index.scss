@@ -1,3 +1,5 @@
+@import "./vendor/font-awesome/scss/font-awesome.scss";
+
 $pewter: #7EA1E4;
 
 .navbar {
@@ -33,7 +35,16 @@ html {
 
 html, body {
   height: 100%;
-  overflow: auto;
+  min-width: 320px;
+}
+
+#app, .app {
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
 }
 
 body {
@@ -42,6 +53,10 @@ body {
 
 .fl {
   display: flex;
+}
+
+.c {
+  justify-content: center;
 }
 
 .sb {

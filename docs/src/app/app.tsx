@@ -13,7 +13,7 @@ interface IAppProps {
 export class App extends React.Component<IAppProps> {
   public render() {
     return (
-      <div>
+      <div className='app'>
         <NavBar />
         <Switch>
           <Route path={getPath(paths.home)} component={Home} />
