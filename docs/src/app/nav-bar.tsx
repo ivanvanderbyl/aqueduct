@@ -18,7 +18,7 @@ export class NavBar extends React.Component<INavBarProps> {
       <div className='navbar fl sb'>
         <div className='fl'>
           <a href='#' className='logo-container'>
-            <img src='./images/dark-logo.svg' style={{ width: '150px' }} />
+            <img src='./images/dark-logo.svg' style={{ width: '150px', height: '80px' }} />
           </a>
         </div>
         <div className='fl navbar-menu'>
