@@ -2,3 +2,4 @@ node_modules
 docs/src/frames/typedoc
 docs/dist
 .DS_STORE
+dist
