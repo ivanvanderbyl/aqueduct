@@ -328,6 +328,14 @@ Filled (2), Expired(3), Removed(4)
     }
 
 
+    export interface IFeesGetParams {
+      makerTokenAddress: string;
+      takerTokenAddress: string;
+      makerTokenAmount: string;
+      takerTokenAmount: string;
+      networkId: number;
+    }
+
     export interface INotificationsGetParams {
       account: string;
     }
@@ -458,10 +466,18 @@ Filled (2), Expired(3), Removed(4)
       /**
        * Get fees for an order of described parameters
        */
-      public async get() {
+      public async get(params: IFeesGetParams) {
         const requestParams: IRequestParams = {
-          method: 'GET',
+          method: 'POST',
           url: `${baseUrl}/v0/fees`
+        };
+
+        requestParams.queryParameters = {
+          makerTokenAddress: params.makerTokenAddress,
+          takerTokenAddress: params.takerTokenAddress,
+          makerTokenAmount: params.makerTokenAmount,
+          takerTokenAmount: params.takerTokenAmount,
+          networkId: params.networkId,
         };
         return this.executeRequest<IFees>(requestParams);
       };
