@@ -20,7 +20,7 @@ import * as io from 'socket.io-client';
 export namespace Aqueduct {
   let baseUrl: string;
   let apiKey: string | undefined;
-  let socket: SocketIOClient.Socket;
+  export let socket: SocketIOClient.Socket;
 
   /**
    * Initialize the Aqueduct client. Required to use the client.
