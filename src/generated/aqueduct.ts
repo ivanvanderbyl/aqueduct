@@ -19,7 +19,7 @@ import * as io from 'socket.io-client';
  */
 export namespace Aqueduct {
   let baseUrl: string;
-  let apiKey: string | undefined;
+  // let apiKey: string | undefined;
   export let socket: SocketIOClient.Socket;
 
   /**
@@ -27,7 +27,7 @@ export namespace Aqueduct {
    */
   export const Initialize = (params: { baseUrl: string, apiKey?: string }) => {
     baseUrl = params.baseUrl;
-    apiKey = params.apiKey;
+    // apiKey = params.apiKey;
     socket = io(baseUrl);
   };
 
@@ -176,7 +176,8 @@ export namespace Aqueduct {
       orderHash: string;
       /**
        * State of the order: Open (0), Canceled (1),
-Filled (2), Expired(3), Removed(4)
+Filled (2), Expired(3), Removed(4),
+PendingCancel (5)
        */
       state: number;
       takerEvents: TakerEvent[];
@@ -211,6 +212,10 @@ Filled (2), Expired(3), Removed(4)
        * Associated transaction hash of fill event
        */
       txHash: string;
+      /**
+       * State of the event: Pending(0), Complete (1)
+       */
+      state: number;
       order: Order;
       /**
        * Unique Identifier
@@ -675,7 +680,7 @@ export interface IPairOrderChangeEventParams {
 
 export interface IOrderChangeEventData {
   order: Order;
-  eventType: ("canceled" | "created" | "expired" | "filled" | "partially-filled" | "removed");
+  eventType: ("canceled" | "created" | "expired" | "filled" | "partially-filled" | "pending-cancellation" | "removed");
   reason?: string;
   
 }
@@ -753,7 +758,8 @@ export interface Order {
   orderHash: string;
   /**
    * State of the order: Open (0), Canceled (1),
-   * Filled (2), Expired(3), Removed(4)
+   * Filled (2), Expired(3), Removed(4),
+   * PendingCancel (5)
    */
   state: number;
   takerEvents: TakerEvent[];
@@ -788,6 +794,10 @@ export interface TakerEvent {
    * Associated transaction hash of fill event
    */
   txHash: string;
+  /**
+   * State of the event: Pending(0), Complete (1)
+   */
+  state: number;
   order: Order;
   /**
    * Unique Identifier
@@ -882,7 +892,7 @@ export interface IPairTakerEventEventParams {
 
 export interface IPairTakerEventEventData {
   takerEvent: TakerEvent;
-  eventType: "created";
+  eventType: ("created" | "removed" | "updated");
   
 }
 export interface TakerEvent {
@@ -902,6 +912,10 @@ export interface TakerEvent {
    * Associated transaction hash of fill event
    */
   txHash: string;
+  /**
+   * State of the event: Pending(0), Complete (1)
+   */
+  state: number;
   order: Order;
   /**
    * Unique Identifier
@@ -991,7 +1005,8 @@ export interface Order {
   orderHash: string;
   /**
    * State of the order: Open (0), Canceled (1),
-   * Filled (2), Expired(3), Removed(4)
+   * Filled (2), Expired(3), Removed(4),
+   * PendingCancel (5)
    */
   state: number;
   takerEvents: TakerEvent[];
@@ -1027,7 +1042,7 @@ export interface IAccountTakerEventEventParams {
 
 export interface IAccountTakerEventEventData {
   takerEvent: TakerEvent;
-  eventType: "created";
+  eventType: ("created" | "removed" | "updated");
   
 }
 export interface TakerEvent {
@@ -1047,6 +1062,10 @@ export interface TakerEvent {
    * Associated transaction hash of fill event
    */
   txHash: string;
+  /**
+   * State of the event: Pending(0), Complete (1)
+   */
+  state: number;
   order: Order;
   /**
    * Unique Identifier
@@ -1136,7 +1155,8 @@ export interface Order {
   orderHash: string;
   /**
    * State of the order: Open (0), Canceled (1),
-   * Filled (2), Expired(3), Removed(4)
+   * Filled (2), Expired(3), Removed(4),
+   * PendingCancel (5)
    */
   state: number;
   takerEvents: TakerEvent[];

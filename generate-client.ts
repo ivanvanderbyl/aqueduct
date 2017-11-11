@@ -92,7 +92,7 @@ import * as io from 'socket.io-client';
  */
 export namespace Aqueduct {
   let baseUrl: string;
-  let apiKey: string | undefined;
+  // let apiKey: string | undefined;
   export let socket: SocketIOClient.Socket;
 
   /**
@@ -100,7 +100,7 @@ export namespace Aqueduct {
    */
   export const Initialize = (params: { baseUrl: string, apiKey?: string }) => {
     baseUrl = params.baseUrl;
-    apiKey = params.apiKey;
+    // apiKey = params.apiKey;
     socket = io(baseUrl);
   };
 
