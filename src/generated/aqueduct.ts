@@ -570,7 +570,7 @@ PendingCancel (5)
           networkId: params.networkId,
           takerAddress: params.takerAddress,
         };
-        return this.executeRequest<Order>(requestParams);
+        return this.executeRequest<Order[]>(requestParams);
       };
     }
     export class ReportsService extends ApiService {
