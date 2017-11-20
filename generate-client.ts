@@ -195,13 +195,10 @@ export namespace Aqueduct {
        */
       public subscribe(params: P, cb: (data: R) => void) {
         this.params = params;
-        this.callback = cb;
-
         socket.emit('subscribe', this.getChannel(params));
 
-        const callback = (changeData: R) => cb(changeData);
-
-        socket.on(this.getChannel(params), callback);
+        this.callback = cb;
+        socket.on(this.getChannel(params), this.callback);
 
         return this;
       }

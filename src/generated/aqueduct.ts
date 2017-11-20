@@ -36,6 +36,21 @@ export namespace Aqueduct {
    */
   export namespace Api {
 
+    export interface IPriceLevel {
+      price: string;
+      volume: string;
+    }
+
+    export interface IOrderBookListing {
+      volume: string;
+      priceLevels: IPriceLevel[];
+    }
+
+    export interface IAggregatedOrderData {
+      sells: IOrderBookListing;
+      buys: IOrderBookListing;
+    }
+
     /**
      * Fee structure
      */
@@ -333,6 +348,12 @@ PendingCancel (5)
     }
 
 
+    export interface IAggregatedOrdersGetParams {
+      networkId: number;
+      baseTokenAddress?: string;
+      quoteTokenAddress?: string;
+    }
+
     export interface IFeesGetParams {
       makerTokenAddress: string;
       takerTokenAddress: string;
@@ -465,6 +486,22 @@ PendingCancel (5)
        * ID of Ethereum network
        */
       networkId: number;
+    }
+    export class AggregatedOrdersService extends ApiService {
+
+      public async get(params: IAggregatedOrdersGetParams) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/v0/aggregated_orders`
+        };
+
+        requestParams.queryParameters = {
+          networkId: params.networkId,
+          baseTokenAddress: params.baseTokenAddress,
+          quoteTokenAddress: params.quoteTokenAddress,
+        };
+        return this.executeRequest<IAggregatedOrderData>(requestParams);
+      };
     }
     export class FeesService extends ApiService {
 
@@ -1188,13 +1225,10 @@ export interface Order {
        */
       public subscribe(params: P, cb: (data: R) => void) {
         this.params = params;
-        this.callback = cb;
-
         socket.emit('subscribe', this.getChannel(params));
 
-        const callback = (changeData: R) => cb(changeData);
-
-        socket.on(this.getChannel(params), callback);
+        this.callback = cb;
+        socket.on(this.getChannel(params), this.callback);
 
         return this;
       }
