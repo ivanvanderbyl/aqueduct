@@ -337,6 +337,7 @@ PendingCancel (5)
     export interface ITokenPair {
       tokenA: IToken;
       tokenB: IToken;
+      minimumQuantity: number;
     }
 
     export interface ITokenPairSummary {
