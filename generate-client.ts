@@ -183,7 +183,7 @@ export namespace Aqueduct {
   export namespace Events {
     ${eventModelContent}
 
-    export abstract class SocketEvent<P, R> {
+    export abstract class SocketEvent<P extends { [key: string]: any }, R> {
       protected abstract path: string;
       private params: P;
       private callback: (data: R) => void;

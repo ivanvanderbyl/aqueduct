@@ -2,7 +2,7 @@
     "compilerOptions": {
         "outDir": "dist",
         "sourceMap": true,
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "module": "commonjs",
         "target": "es5",
         "lib": [
@@ -14,7 +14,7 @@
         "noUnusedLocals": true,
         "strictNullChecks": true,
         "newLine": "LF",
-        "noUnusedParameters": false,
+        "noUnusedParameters": true,
         "emitDecoratorMetadata": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,

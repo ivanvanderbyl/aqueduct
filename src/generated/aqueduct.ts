@@ -718,7 +718,7 @@ export interface IPairOrderChangeEventParams {
 
 export interface IOrderChangeEventData {
   order: Order;
-  eventType: ("canceled" | "created" | "expired" | "filled" | "partially-filled" | "pending-cancellation" | "removed");
+  eventType: ("canceled" | "created" | "expired" | "filled" | "partially-filled" | "pending-cancellation" | "pending-filled" | "pending-partially-filled" | "removed");
   reason?: string;
   
 }
@@ -1214,7 +1214,7 @@ export interface Order {
 }
 
 
-    export abstract class SocketEvent<P, R> {
+    export abstract class SocketEvent<P extends { [key: string]: any }, R> {
       protected abstract path: string;
       private params: P;
       private callback: (data: R) => void;
