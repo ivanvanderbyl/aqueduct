@@ -39,6 +39,7 @@ export namespace Aqueduct {
     export interface IPriceLevel {
       price: string;
       volume: string;
+      volumeRatio: number;
     }
 
     export interface IOrderBookListing {
@@ -690,7 +691,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseUrl}/v0/token-pairs/${params.networkId}`
         };
-        return this.executeRequest<ITokenPair[]>(requestParams);
+        return this.executeRequest<any>(requestParams);
       };
     }
   }
