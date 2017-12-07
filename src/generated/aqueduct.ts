@@ -247,6 +247,27 @@ PendingCancel (5)
       dateUpdated: Date;
     }
 
+    export interface IDateSummary {
+      date: Date;
+      low?: number;
+      high?: number;
+      open?: number;
+      close?: number;
+      volume?: number;
+    }
+
+    export interface IStandardToken {
+      address: string;
+      minAmount: string;
+      maxAmount: string;
+      precision: number;
+    }
+
+    export interface IStandardTokenPair {
+      tokenA: IStandardToken;
+      tokenB: IStandardToken;
+    }
+
     /**
      * Elliptic Curve Digital Signature
      */
@@ -256,7 +277,35 @@ PendingCancel (5)
       s: string;
     }
 
-    export interface ICreateOrderRequest {
+    export interface IStandardOrder {
+      exchangeContractAddress: string;
+      maker: string;
+      taker: string;
+      makerTokenAddress: string;
+      takerTokenAddress: string;
+      feeRecipient: string;
+      makerTokenAmount: string;
+      takerTokenAmount: string;
+      makerFee: string;
+      takerFee: string;
+      expirationUnixTimestampSec: string;
+      salt: string;
+      ecSignature: IEcSignature;
+    }
+
+    export interface IStandardFeeRequest {
+      maker: string;
+      taker: string;
+      exchangeContractAddress: string;
+      makerTokenAddress: string;
+      takerTokenAddress: string;
+      makerTokenAmount: string;
+      takerTokenAmount: string;
+      expirationUnixTimestampSec: string;
+      salt: string;
+    }
+
+    export interface IStandardOrderCreationRequest {
       /**
        * Order maker
        */
@@ -304,28 +353,16 @@ PendingCancel (5)
       /**
        * Unix timestamp when order expires
        */
-      expirationUnixTimestampSec: number;
-      /**
-       * Secure hash of signed order
-       */
-      orderHash: string;
-      /**
-       * ID of Ethereum network
-       */
-      networkId: number;
+      expirationUnixTimestampSec: string;
       /**
        * Secure EC Signature
        */
       ecSignature: IEcSignature;
     }
 
-    export interface IDateSummary {
-      date: Date;
-      low?: number;
-      high?: number;
-      open?: number;
-      close?: number;
-      volume?: number;
+    export interface IStandardOrderbook {
+      bids: IStandardOrder[];
+      asks: IStandardOrder[];
     }
 
     export interface IToken {
@@ -396,10 +433,6 @@ PendingCancel (5)
       isOpen?: boolean;
     }
 
-    export interface IOrdersCreateParams {
-      request: ICreateOrderRequest;
-    }
-
     export interface IOrdersGetBestParams {
       /**
        * Address of maker token
@@ -450,6 +483,49 @@ PendingCancel (5)
       endDate: Date;
     }
 
+    export interface IStandardGetTokenPairsParams {
+      networkId: number;
+      page: number;
+      per_page: number;
+    }
+
+    export interface IStandardGetOrdersParams {
+      networkId: number;
+      per_page: number;
+      page: number;
+      exchangeContractAddress?: string;
+      tokenAddress?: string;
+      makerTokenAddress?: string;
+      takerTokenAddress?: string;
+      maker?: string;
+      taker?: string;
+      trader?: string;
+      feeRecipient?: string;
+    }
+
+    export interface IStandardGetOrderByHashParams {
+      networkId: number;
+      orderHash: string;
+    }
+
+    export interface IStandardGetFeesParams {
+      networkId: number;
+      request: IStandardFeeRequest;
+    }
+
+    export interface IStandardCreateParams {
+      networkId: number;
+      request: IStandardOrderCreationRequest;
+    }
+
+    export interface IStandardGetOrderbookParams {
+      networkId: number;
+      baseTokenAddress: string;
+      quoteTokenAddress: string;
+      per_page: number;
+      page: number;
+    }
+
     export interface ITakerEventsGetByTakerParams {
       /**
        * ID of Ethereum network
@@ -494,7 +570,7 @@ PendingCancel (5)
       public async get(params: IAggregatedOrdersGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/aggregated_orders`
+          url: `${baseUrl}/api/aggregated_orders`
         };
 
         requestParams.queryParameters = {
@@ -513,7 +589,7 @@ PendingCancel (5)
       public async get(params: IFeesGetParams) {
         const requestParams: IRequestParams = {
           method: 'POST',
-          url: `${baseUrl}/v0/fees`
+          url: `${baseUrl}/api/fees`
         };
 
         requestParams.queryParameters = {
@@ -534,7 +610,7 @@ PendingCancel (5)
       public async getSupported() {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/networks`
+          url: `${baseUrl}/api/networks`
         };
         return this.executeRequest<INetwork[]>(requestParams);
       };
@@ -547,7 +623,7 @@ PendingCancel (5)
       public async get(params: INotificationsGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/notifications`
+          url: `${baseUrl}/api/notifications`
         };
 
         requestParams.queryParameters = {
@@ -564,7 +640,7 @@ PendingCancel (5)
       public async get(params: IOrdersGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/orders`
+          url: `${baseUrl}/api/orders`
         };
 
         requestParams.queryParameters = {
@@ -580,25 +656,12 @@ PendingCancel (5)
       };
 
       /**
-       * Create an order
-       */
-      public async create(params: IOrdersCreateParams) {
-        const requestParams: IRequestParams = {
-          method: 'POST',
-          url: `${baseUrl}/v0/orders`
-        };
-
-        requestParams.body = params.request;
-        return this.executeRequest<Order>(requestParams);
-      };
-
-      /**
        * Get the order(s) representing the best market price
        */
       public async getBest(params: IOrdersGetBestParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/orders/best`
+          url: `${baseUrl}/api/orders/best`
         };
 
         requestParams.queryParameters = {
@@ -620,7 +683,7 @@ PendingCancel (5)
       public async getHistorical(params: IReportsGetHistoricalParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/reports/historical`
+          url: `${baseUrl}/api/reports/historical`
         };
 
         requestParams.queryParameters = {
@@ -633,6 +696,88 @@ PendingCancel (5)
         return this.executeRequest<IDateSummary[]>(requestParams);
       };
     }
+    export class StandardService extends ApiService {
+
+      public async getTokenPairs(params: IStandardGetTokenPairsParams) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/api/standard/${params.networkId}/v0/token_pairs`
+        };
+
+        requestParams.queryParameters = {
+          page: params.page,
+          per_page: params.per_page,
+        };
+        return this.executeRequest<IStandardTokenPair[]>(requestParams);
+      };
+
+      public async getOrders(params: IStandardGetOrdersParams) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/api/standard/${params.networkId}/v0/orders`
+        };
+
+        requestParams.queryParameters = {
+          per_page: params.per_page,
+          page: params.page,
+          exchangeContractAddress: params.exchangeContractAddress,
+          tokenAddress: params.tokenAddress,
+          makerTokenAddress: params.makerTokenAddress,
+          takerTokenAddress: params.takerTokenAddress,
+          maker: params.maker,
+          taker: params.taker,
+          trader: params.trader,
+          feeRecipient: params.feeRecipient,
+        };
+        return this.executeRequest<IStandardOrder[]>(requestParams);
+      };
+
+      public async getOrderByHash(params: IStandardGetOrderByHashParams) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/api/standard/${params.networkId}/v0/order/${params.orderHash}`
+        };
+        return this.executeRequest<IStandardOrder>(requestParams);
+      };
+
+      public async getFees(params: IStandardGetFeesParams) {
+        const requestParams: IRequestParams = {
+          method: 'POST',
+          url: `${baseUrl}/api/standard/${params.networkId}/v0/fees`
+        };
+
+        requestParams.body = params.request;
+        return this.executeRequest<IFees>(requestParams);
+      };
+
+      /**
+       * Create an order
+       */
+      public async create(params: IStandardCreateParams) {
+        const requestParams: IRequestParams = {
+          method: 'POST',
+          url: `${baseUrl}/api/standard/${params.networkId}/v0/order`
+        };
+
+        requestParams.body = params.request;
+        return this.executeRequest<Order>(requestParams);
+      };
+
+      public async getOrderbook(params: IStandardGetOrderbookParams) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/api/standard/${params.networkId}/v0/orderbook`
+        };
+
+        requestParams.queryParameters = {
+          baseTokenAddress: params.baseTokenAddress,
+          quoteTokenAddress: params.quoteTokenAddress,
+          per_page: params.per_page,
+          page: params.page,
+        };
+        return this.executeRequest<IStandardOrderbook>(requestParams);
+      };
+    }
     export class TakerEventsService extends ApiService {
 
       /**
@@ -641,7 +786,7 @@ PendingCancel (5)
       public async getByTaker(params: ITakerEventsGetByTakerParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/taker-events/taker`
+          url: `${baseUrl}/api/taker-events/taker`
         };
 
         requestParams.queryParameters = {
@@ -657,7 +802,7 @@ PendingCancel (5)
       public async getByPair(params: ITakerEventsGetByPairParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/taker-events/pair`
+          url: `${baseUrl}/api/taker-events/pair`
         };
 
         requestParams.queryParameters = {
@@ -676,7 +821,7 @@ PendingCancel (5)
       public async get(params: ITokenPairSummariesGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/token-pair-summaries/${params.networkId}`
+          url: `${baseUrl}/api/token-pair-summaries/${params.networkId}`
         };
         return this.executeRequest<ITokenPairSummary[]>(requestParams);
       };
@@ -689,7 +834,7 @@ PendingCancel (5)
       public async get(params: ITokenPairsGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/v0/token-pairs/${params.networkId}`
+          url: `${baseUrl}/api/token-pairs/${params.networkId}`
         };
         return this.executeRequest<any>(requestParams);
       };
