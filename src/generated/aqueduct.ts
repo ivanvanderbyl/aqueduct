@@ -256,6 +256,19 @@ PendingCancel (5)
       volume?: number;
     }
 
+    export interface ITokenTicker {
+      id: string;
+      name: string;
+      symbol: string;
+      usdPrice: string;
+      btcPrice: string;
+      hourlyPercentageChange: string;
+      dailyPercentageChange: string;
+      weeklyPercentageChange: string;
+      dailyVolume: string;
+      priceEth: string;
+    }
+
     export interface IStandardToken {
       address: string;
       minAmount: string;
@@ -291,6 +304,7 @@ PendingCancel (5)
       expirationUnixTimestampSec: string;
       salt: string;
       ecSignature: IEcSignature;
+      remainingTakerTokenAmount: string;
     }
 
     export interface IStandardFeeRequest {
@@ -694,6 +708,14 @@ PendingCancel (5)
           endDate: params.endDate,
         };
         return this.executeRequest<IDateSummary[]>(requestParams);
+      };
+
+      public async getTickerData() {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/api/reports/ticker`
+        };
+        return this.executeRequest<ITokenTicker[]>(requestParams);
       };
     }
     export class StandardService extends ApiService {
