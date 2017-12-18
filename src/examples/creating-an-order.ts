@@ -94,7 +94,10 @@ const unlockedAccountAddress = '0x6ecbe1db9ef729cbe972c83fb886247691fb6beb';
   /**
    * Sign an order
    */
-  const signedOrder = await Aqueduct.Utils.signOrder(zeroEx, signOrderParams);
+  const signedOrder = await Aqueduct.Utils.signOrder({
+    client: zeroEx,
+    getOrderHashHex: ZeroEx.getOrderHashHex
+  }, signOrderParams);
 
   try {
     /**

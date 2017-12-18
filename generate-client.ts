@@ -75,7 +75,6 @@ const template = (eventModelContent: string) => handlebars.compile(`/* tslint:di
 import { ApiService, IRequestParams } from '../api-service';
 import * as io from 'socket.io-client';
 import { BigNumber } from 'bignumber.js';
-import { Order, ZeroEx, SignedOrder } from '0x.js';
 
 /**
  * ### Background
@@ -250,8 +249,34 @@ export namespace Aqueduct {
       salt: BigNumber;
     }
 
-    export const signOrder = async (zeroEx: ZeroEx, params: ISignOrderParams): Promise<Aqueduct.Api.IStandardOrderCreationRequest> => {
-      const order: Order = {
+    export interface IZeroExOrder {
+      maker: string;
+      taker: string;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      makerTokenAmount: BigNumber;
+      takerTokenAmount: BigNumber;
+      makerTokenAddress: string;
+      takerTokenAddress: string;
+      salt: BigNumber;
+      exchangeContractAddress: string;
+      feeRecipient: string;
+      expirationUnixTimestampSec: BigNumber;
+    }
+
+    export interface IZeroExSignedOrder extends IZeroExOrder {
+      ecSignature: Api.IEcSignature;
+    }
+
+    export interface IZeroExImplementation {
+      client: {
+        signOrderHashAsync(orderHash: string, maker: string): Promise<Api.IEcSignature>;
+      };
+      getOrderHashHex: (order: IZeroExOrder) => string;
+    }
+
+    export const signOrder = async (zeroEx: IZeroExImplementation, params: ISignOrderParams): Promise<Aqueduct.Api.IStandardOrderCreationRequest> => {
+      const order: IZeroExOrder = {
         maker: params.maker,
         taker: params.taker,
         makerFee: params.makerFee,
@@ -260,14 +285,14 @@ export namespace Aqueduct {
         takerTokenAmount: params.takerTokenAmount,
         makerTokenAddress: params.makerTokenAddress,
         takerTokenAddress: params.takerTokenAddress as string,
-        salt: ZeroEx.generatePseudoRandomSalt(),
+        salt: params.salt,
         exchangeContractAddress: params.exchangeContractAddress,
         feeRecipient: params.feeRecipient,
         expirationUnixTimestampSec: new BigNumber(params.expirationUnixTimestampSec)
       };
 
-      const orderHash = ZeroEx.getOrderHashHex(order);
-      const ecSignature = await zeroEx.signOrderHashAsync(orderHash, params.maker);
+      const orderHash = zeroEx.getOrderHashHex(order);
+      const ecSignature = await zeroEx.client.signOrderHashAsync(orderHash, params.maker);
 
       return {
         maker: params.maker,
@@ -286,7 +311,7 @@ export namespace Aqueduct {
       };
     };
 
-    export const convertStandardOrderToSignedOrder = (order: Aqueduct.Api.IStandardOrder): SignedOrder => {
+    export const convertStandardOrderToSignedOrder = (order: Aqueduct.Api.IStandardOrder): IZeroExSignedOrder => {
       return {
         ecSignature: order.ecSignature,
         exchangeContractAddress: order.exchangeContractAddress,
