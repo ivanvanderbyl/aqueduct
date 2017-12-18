@@ -1,6 +1,8 @@
 /* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
 import * as io from 'socket.io-client';
+import { BigNumber } from 'bignumber.js';
+import { Order, ZeroEx, SignedOrder } from '0x.js';
 
 /**
  * ### Background
@@ -1455,5 +1457,76 @@ export interface Order {
     export class AccountTakerEvent extends SocketEvent<IAccountTakerEventEventParams, IAccountTakerEventEventData> {
       protected path = 'account-taker-event/:account';
     }
+  }
+
+  export namespace Utils {
+    export interface ISignOrderParams {
+      maker: string;
+      taker: string;
+      makerFee: BigNumber;
+      takerFee: BigNumber;
+      makerTokenAmount: BigNumber;
+      makerTokenAddress: string;
+      takerTokenAmount: BigNumber;
+      takerTokenAddress: string;
+      exchangeContractAddress: string;
+      feeRecipient: string;
+      expirationUnixTimestampSec: number;
+      salt: BigNumber;
+    }
+
+    export const signOrder = async (zeroEx: ZeroEx, params: ISignOrderParams): Promise<Aqueduct.Api.IStandardOrderCreationRequest> => {
+      const order: Order = {
+        maker: params.maker,
+        taker: params.taker,
+        makerFee: params.makerFee,
+        takerFee: params.takerFee,
+        makerTokenAmount: params.makerTokenAmount,
+        takerTokenAmount: params.takerTokenAmount,
+        makerTokenAddress: params.makerTokenAddress,
+        takerTokenAddress: params.takerTokenAddress as string,
+        salt: ZeroEx.generatePseudoRandomSalt(),
+        exchangeContractAddress: params.exchangeContractAddress,
+        feeRecipient: params.feeRecipient,
+        expirationUnixTimestampSec: new BigNumber(params.expirationUnixTimestampSec)
+      };
+
+      const orderHash = ZeroEx.getOrderHashHex(order);
+      const ecSignature = await zeroEx.signOrderHashAsync(orderHash, params.maker);
+
+      return {
+        maker: params.maker,
+        taker: order.taker,
+        makerFee: params.makerFee.toString(),
+        takerFee: params.takerFee.toString(),
+        makerTokenAmount: params.makerTokenAmount.toString(),
+        takerTokenAmount: params.takerTokenAmount.toString(),
+        makerTokenAddress: params.makerTokenAddress,
+        takerTokenAddress: params.takerTokenAddress,
+        salt: order.salt.toString(),
+        exchangeContractAddress: params.exchangeContractAddress,
+        feeRecipient: params.feeRecipient,
+        expirationUnixTimestampSec: order.expirationUnixTimestampSec.toString(),
+        ecSignature
+      };
+    };
+
+    export const convertStandardOrderToSignedOrder = (order: Aqueduct.Api.IStandardOrder): SignedOrder => {
+      return {
+        ecSignature: order.ecSignature,
+        exchangeContractAddress: order.exchangeContractAddress,
+        expirationUnixTimestampSec: new BigNumber(order.expirationUnixTimestampSec),
+        feeRecipient: order.feeRecipient,
+        maker: order.maker,
+        makerFee: new BigNumber(order.makerFee),
+        makerTokenAddress: order.makerTokenAddress,
+        makerTokenAmount: new BigNumber(order.makerTokenAmount),
+        salt: new BigNumber(order.salt),
+        taker: order.taker,
+        takerFee: new BigNumber(order.takerFee),
+        takerTokenAddress: order.takerTokenAddress,
+        takerTokenAmount: new BigNumber(order.takerTokenAmount)
+      };
+    };
   }
 }

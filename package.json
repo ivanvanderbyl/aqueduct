@@ -23,10 +23,13 @@
     "generate:client": "ts-node ./generate-client.ts --baseApiUrl=http://localhost:8080",
     "generate:docs": "npm run build:lib && rimraf ./docs/src/frames/typedoc && typedoc --excludeExternals --excludePrivate --theme themes/custom --readme none --name \"Aqueduct JavaScript Client\" --mode modules --out ./docs/src/frames/typedoc ./src/generated/aqueduct.ts",
     "fetch:swagger": "ts-node ./fetch-swagger --baseApiUrl=http://localhost:8080",
-    "fetch:events": "ts-node ./events/fetch-events --baseApiUrl=http://localhost:8080"
+    "fetch:events": "ts-node ./events/fetch-events --baseApiUrl=http://localhost:8080",
+    "script:create:order": "ts-node ./src/examples/creating-an-order.ts",
+    "script:fill:order": "ts-node ./src/examples/filling-an-order.ts"
   },
   "dependencies": {
     "@types/socket.io-client": "^1.4.31",
+    "0x.js": "^0.27.2",
     "moment": "^2.19.1",
     "socket.io-client": "^2.0.3",
     "superagent": "^3.7.0"
@@ -35,13 +38,14 @@
     "@types/handlebars": "^4.0.36",
     "@types/superagent": "^3.5.6",
     "@types/yargs": "^8.0.2",
-    "json-schema-to-typescript": "^4.6.5",
     "handlebars": "^4.0.11",
+    "json-schema-to-typescript": "^4.6.5",
     "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typedoc": "^0.9.0",
     "typescript": "^2.5.3",
+    "web3": "^1.0.0-beta.26",
     "yargs": "^9.0.1"
   }
 }
