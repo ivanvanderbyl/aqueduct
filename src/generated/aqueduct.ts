@@ -197,6 +197,7 @@ Filled (2), Expired(3), Removed(4),
 PendingCancel (5)
        */
       state: number;
+      source: string;
       takerEvents: TakerEvent[];
       /**
        * Unique Identifier
@@ -445,6 +446,10 @@ PendingCancel (5)
        * Address of maker
        */
       maker?: string;
+      /**
+       * Include orders from other relayers
+       */
+      includeExternal?: boolean;
       isOpen?: boolean;
     }
 
@@ -665,6 +670,7 @@ PendingCancel (5)
           isAscending: params.isAscending,
           sortOrder: params.sortOrder,
           maker: params.maker,
+          includeExternal: params.includeExternal,
           isOpen: params.isOpen,
         };
         return this.executeRequest<Order[]>(requestParams);
@@ -969,6 +975,7 @@ export interface Order {
    * PendingCancel (5)
    */
   state: number;
+  source: string;
   takerEvents: TakerEvent[];
   /**
    * Unique Identifier
@@ -1216,6 +1223,7 @@ export interface Order {
    * PendingCancel (5)
    */
   state: number;
+  source: string;
   takerEvents: TakerEvent[];
   /**
    * Unique Identifier
@@ -1366,6 +1374,7 @@ export interface Order {
    * PendingCancel (5)
    */
   state: number;
+  source: string;
   takerEvents: TakerEvent[];
   /**
    * Unique Identifier
