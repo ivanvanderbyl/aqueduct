@@ -41,6 +41,7 @@ export namespace Aqueduct {
       price: string;
       volume: string;
       volumeRatio: number;
+      position?: string;
     }
 
     export interface IOrderBookListing {
@@ -407,6 +408,7 @@ PendingCancel (5)
       networkId: number;
       baseTokenAddress?: string;
       quoteTokenAddress?: string;
+      maker?: string;
     }
 
     export interface IFeesGetParams {
@@ -597,6 +599,7 @@ PendingCancel (5)
           networkId: params.networkId,
           baseTokenAddress: params.baseTokenAddress,
           quoteTokenAddress: params.quoteTokenAddress,
+          maker: params.maker,
         };
         return this.executeRequest<IAggregatedOrderData>(requestParams);
       };
