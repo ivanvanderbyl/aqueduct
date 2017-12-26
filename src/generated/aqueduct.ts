@@ -393,6 +393,8 @@ PendingCancel (5)
       tokenA: IToken;
       tokenB: IToken;
       minimumQuantity: string;
+      baseVolume: string;
+      quoteVolume: string;
     }
 
     export interface ITokenPairSummary {
