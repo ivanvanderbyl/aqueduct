@@ -1,0 +1,87 @@
+$mobileCutoff: 500px;
+
+* {
+  box-sizing: border-box;
+}
+
+.account {
+  background-color: #faf8f5;
+  flex: 1;
+  overflow: auto;
+
+  @media(max-width: $mobileCutoff) {
+    padding: 0 1rem;
+  }
+}
+
+.outer-container {
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  max-width: 500px;  
+
+  .banner {
+    padding: 7rem 0 3.5rem 0;
+
+    @media(max-width: $mobileCutoff) {
+      padding: 2rem 0 0rem;
+    }
+  }
+
+  .inner-container {
+    .fee-table {
+      width: 100%;
+      border: #41424e;
+      border-width: 1px;
+
+      td {
+        color: #6d6d71;
+      }
+    }
+
+    h1 {
+      color: #6c6f7f;
+      font-size: 2.5rem;
+      text-align: left;
+      font-weight: 100;
+      line-height: 1.4;
+
+      @media(max-width: $mobileCutoff) {
+        font-size: 2rem;
+      }
+    }
+
+    p {
+      color: #6d6d71;
+      line-height: 1.5;
+    }
+
+    .button-bar {
+      display: flex;
+      padding-top: 1rem;
+
+      @media(max-width: $mobileCutoff) {
+        padding-right: 1rem;
+      }
+
+      a {
+        background-color: #2b2c34;
+        text-decoration: none;
+        padding: 1rem;
+        text-align: center;
+        color:#faf8f5;
+        flex: 1;
+
+        &:first-child {
+          margin-right: 1rem;      
+        }
+
+        &:hover {
+          background-color: #41424e;
+        }
+      }
+    }
+  }
+}

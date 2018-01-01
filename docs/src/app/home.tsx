@@ -20,7 +20,12 @@ export class Home extends React.Component<IHomeProps> {
               <h1>A protocol and tool set for sharing liquidity</h1>
               <p>
                 ERC dEX believes that the future of decentralized exchange depends on deep liquidity pools and robust relayer networks.
-                We've developed a protocol and tools to make integration easy and simple.
+                We've developed a protocol and tools to make integration easy and simple.  Aqueduct allows users to query the ERC dEX order book,
+                submit orders, be notified of events, and even share in transaction fees.
+              </p>
+              <p>
+                If you would like to use Aqueduct, please <Link to={getPath(paths.apply)}>apply here</Link> for an API key.  If you have already applied,
+                and are awaiting results, or you have an API key and wish to review your account, <Link to={getPath(paths.login)}>login here</Link>.
               </p>
               <div className='fl sb button-bar'>
                 <Link to={getPath(paths.rest)} className='link'>REST API</Link>

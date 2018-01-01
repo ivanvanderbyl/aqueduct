@@ -7,6 +7,15 @@ export const paths = {
   },
   client: {
     path: '/client'
+  },
+  apply: {
+    path: '/apply'
+  },
+  login: {
+    path: '/login'
+  },
+  account: {
+    path: '/account'
   }
 };
 

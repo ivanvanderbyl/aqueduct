@@ -24,12 +24,14 @@ export class NavBar extends React.Component<INavBarProps> {
         <div className='fl navbar-menu'>
           <NavLink activeClassName='is-active' to={getPath(paths.rest)} className='link'>REST API</NavLink>
           <NavLink activeClassName='is-active' to={getPath(paths.client)} className='link'>JavaScript Client</NavLink>
+          <NavLink activeClassName='is-active' to={getPath(paths.login)} className='link'>Login</NavLink>
         </div>
         <div className='navbar-mobile-menu'>
           <i className='fa fa-bars' onClick={this.onClickMenu} />
           {this.menuActive && <div className='link-list'>
             <NavLink activeClassName='is-active' to={getPath(paths.rest)} className='link'>REST API</NavLink>
             <NavLink activeClassName='is-active' to={getPath(paths.client)} className='link'>JavaScript Client</NavLink>
+            <NavLink activeClassName='is-active' to={getPath(paths.login)} className='link'>Login</NavLink>
           </div>}
         </div>
       </div>
