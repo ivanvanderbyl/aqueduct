@@ -10,11 +10,12 @@ if (!baseApiUrl) {
 }
 
 const getSwaggerJson = () => {
-  return new Promise<Swagger.ISpec>((resolve, _reject) => {
+  return new Promise<Swagger.ISpec>((resolve, reject) => {
     request
       .get(`${baseApiUrl}/swagger.json`)
       .set('Accept', 'application/json')
-      .end((_, res) => {
+      .end((err, res) => {
+        if (err) { return reject(err); }
         resolve(res.body);
       });
   });
