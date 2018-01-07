@@ -250,6 +250,11 @@ PendingCancel (5)
       dateUpdated: Date;
     }
 
+    export interface IMarketOrderQuote {
+      totalQuantity: string;
+      orders: Order[];
+    }
+
     export interface IDateSummary {
       date: Date;
       low?: number;
@@ -698,7 +703,7 @@ PendingCancel (5)
           networkId: params.networkId,
           takerAddress: params.takerAddress,
         };
-        return this.executeRequest<Order[]>(requestParams);
+        return this.executeRequest<IMarketOrderQuote>(requestParams);
       };
     }
     export class ReportsService extends ApiService {
