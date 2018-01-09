@@ -91,6 +91,20 @@ export namespace Aqueduct {
     }
 
     /**
+     * To set maintenance status from redis-cli:
+set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: true, \&quot;reason\&quot;: \&quot;There is currently a problem with the database.\&quot; }&quot;
+
+or to turn off
+
+set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: false }&quot;
+Current status of app
+     */
+    export interface IMaintenanceStatus {
+      isMaintenance: boolean;
+      reason?: string;
+    }
+
+    /**
      * A notification meant for consumption by clients
      */
     export interface Notification {
@@ -643,6 +657,17 @@ PendingCancel (5)
           url: `${baseUrl}/api/networks`
         };
         return this.executeRequest<INetwork[]>(requestParams);
+      };
+
+      /**
+       * Determine if app is in maintenance mode
+       */
+      public async isMaintenance() {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseUrl}/api/networks/maintenance`
+        };
+        return this.executeRequest<IMaintenanceStatus>(requestParams);
       };
     }
     export class NotificationsService extends ApiService {
