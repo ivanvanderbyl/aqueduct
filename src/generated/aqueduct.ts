@@ -593,6 +593,7 @@ PendingCancel (5)
        * Address of taker token
        */
       takerTokenAddress: string;
+      taker?: string;
     }
 
     export interface ITokenPairSummariesGetParams {
@@ -873,6 +874,7 @@ PendingCancel (5)
           networkId: params.networkId,
           makerTokenAddress: params.makerTokenAddress,
           takerTokenAddress: params.takerTokenAddress,
+          taker: params.taker,
         };
         return this.executeRequest<TakerEvent[]>(requestParams);
       };
