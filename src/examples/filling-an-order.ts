@@ -64,6 +64,9 @@ const unlockedAccountAddress = '0x6ecbe1db9ef729cbe972c83fb886247691fb6beb';
      */
     const tx = await zeroEx.exchange.fillOrderAsync(signedOrder, new BigNumber(order.remainingTakerTokenAmount), true, unlockedAccountAddress);
     console.log(`Order filled: ${tx}`);
+
+    // notify ERC dEX of the fill / claim fee share
+    const token = await new Aqueduct.Api.FeesService().claimTransaction(tx);
   } catch (err) {
     console.log(`Problem filling the order: ${err}`);
   }
