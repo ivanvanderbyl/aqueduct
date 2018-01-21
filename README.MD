@@ -2,7 +2,7 @@
 
 ## Background
 
-- The Aqueduct Client is for [Øx relayers](http://0xproject.com) to use to share liquidity with one another
+- The Aqueduct Client is for [Øx relayers](http://0xproject.com) to use to share liquidity with one another and for liquidity providers, market makers, or algorithmic traders to have a convenient way for interacting with any relayer that supports the Aqueduct Protocol.
 
 ## Goals
 
@@ -16,4 +16,4 @@ npm install aqueduct --save
 ```
 
 ## Examples
-TBD
+Usage examples can be found in the [examples directory](https://github.com/ERCdEX/aqueduct/tree/master/src/examples)
