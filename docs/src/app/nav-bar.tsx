@@ -28,8 +28,8 @@ export class NavBar extends React.Component<INavBarProps> {
         <div className='navbar-mobile-menu'>
           <i className='fa fa-bars' onClick={this.onClickMenu} />
           {this.menuActive && <div className='link-list'>
-            <NavLink activeClassName='is-active' to={getPath(paths.rest)} className='link'>REST API</NavLink>
-            <NavLink activeClassName='is-active' to={getPath(paths.client)} className='link'>JavaScript Client</NavLink>
+            <NavLink activeClassName='is-active' to={getPath(paths.rest)} onClick={this.onClickMobileMenuItem} className='link'>REST API</NavLink>
+            <NavLink activeClassName='is-active' to={getPath(paths.client)} onClick={this.onClickMobileMenuItem} className='link'>JavaScript Client</NavLink>
           </div>}
         </div>
       </div>
@@ -37,4 +37,8 @@ export class NavBar extends React.Component<INavBarProps> {
   }
 
   private readonly onClickMenu = () => this.menuActive = !this.menuActive;
+
+  private readonly onClickMobileMenuItem = () => {
+    this.menuActive = false;
+  }
 }

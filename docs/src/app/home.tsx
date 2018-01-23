@@ -10,7 +10,7 @@ interface IHomeProps {
 export class Home extends React.Component<IHomeProps> {
   public render() {
     return (
-      <div className='home'>
+      <div className='home oa p-bottom'>
         <div className='outer-container'>
           <div className='content'>
             <div className='banner'>
