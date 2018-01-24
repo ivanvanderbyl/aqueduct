@@ -1473,10 +1473,18 @@ export interface ITokenTicker {
        */
       public subscribe(params: P, cb: (data: R) => void) {
         this.params = params;
-        socket.emit('subscribe', this.getChannel(params));
-
         this.callback = cb;
-        socket.on(this.getChannel(params), this.callback);
+
+        const subscribeFn = () => {
+          socket.emit('subscribe', this.getChannel(params));
+          socket.on(this.getChannel(params), this.callback);
+        };
+        subscribeFn();
+
+        socket.on('reconnect', () => {
+          this.unsubscribe();
+          subscribeFn();
+        });
 
         return this;
       }
