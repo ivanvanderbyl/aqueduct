@@ -3,3 +3,4 @@ docs/src/frames/typedoc
 docs/dist
 .DS_STORE
 dist
+package-lock.json
