@@ -92,7 +92,7 @@ export namespace Aqueduct {
 
     /**
      * To set maintenance status from redis-cli:
-set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: true, \&quot;reason\&quot;: \&quot;There is currently a problem with the database.\&quot; }&quot;
+set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: true, \&quot;reason\&quot;: \&quot;We are currently performing maintenance on the database. Service will return as soon as possible.\&quot; }&quot;
 
 or to turn off
 
@@ -528,14 +528,14 @@ PendingCancel (5)
 
     export interface IStandardGetTokenPairsParams {
       networkId: number;
-      page: number;
-      per_page: number;
+      per_page?: number;
+      page?: number;
     }
 
     export interface IStandardGetOrdersParams {
       networkId: number;
-      per_page: number;
-      page: number;
+      per_page?: number;
+      page?: number;
       exchangeContractAddress?: string;
       tokenAddress?: string;
       makerTokenAddress?: string;
@@ -565,8 +565,8 @@ PendingCancel (5)
       networkId: number;
       baseTokenAddress: string;
       quoteTokenAddress: string;
-      per_page: number;
-      page: number;
+      per_page?: number;
+      page?: number;
     }
 
     export interface ITakerEventsGetByTakerParams {
@@ -770,8 +770,8 @@ PendingCancel (5)
         };
 
         requestParams.queryParameters = {
-          page: params.page,
           per_page: params.per_page,
+          page: params.page,
         };
         return this.executeRequest<IStandardTokenPair[]>(requestParams);
       };
