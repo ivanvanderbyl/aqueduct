@@ -9,7 +9,7 @@ ws.on('open', () => {
   ws.send(`sub:account-notification/${myAccountAddress}`);
 
   // later on, for instance if you change accounts
-  ws.send(`unsub:account-notification/${myAccountAddress}`;
+  ws.send(`unsub:account-notification/${myAccountAddress}`);
 });
 
 ws.on('message', (data: { channel: string; }) => {
