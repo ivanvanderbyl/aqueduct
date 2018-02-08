@@ -22,14 +22,16 @@ export class NavBar extends React.Component<INavBarProps> {
           </a>
         </div>
         <div className='fl navbar-menu'>
-          <NavLink activeClassName='is-active' to={getPath(paths.rest)} className='link'>REST API</NavLink>
-          <NavLink activeClassName='is-active' to={getPath(paths.client)} className='link'>JavaScript Client</NavLink>
+          <a className='link' href='/rest.html'>Rest API</a>
+          <NavLink activeClassName='is-active' to={getPath(paths.events)} className='link'>Events API</NavLink>
+          <a className='link' href='/client/index.html'>JavaScript Client</a>
         </div>
         <div className='navbar-mobile-menu'>
           <i className='fa fa-bars' onClick={this.onClickMenu} />
           {this.menuActive && <div className='link-list'>
-            <NavLink activeClassName='is-active' to={getPath(paths.rest)} onClick={this.onClickMobileMenuItem} className='link'>REST API</NavLink>
-            <NavLink activeClassName='is-active' to={getPath(paths.client)} onClick={this.onClickMobileMenuItem} className='link'>JavaScript Client</NavLink>
+            <a className='link' href='/rest.html'>Rest API</a>
+            <a className='link' href='/client/index.html'>JavaScript Client</a>
+            <NavLink activeClassName='is-active' to={getPath(paths.events)} onClick={this.onClickMobileMenuItem} className='link'>Events API</NavLink>
           </div>}
         </div>
       </div>

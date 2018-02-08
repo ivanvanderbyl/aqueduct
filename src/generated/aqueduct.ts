@@ -1,7 +1,7 @@
 /* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
-import * as io from 'socket.io-client';
 import { BigNumber } from 'bignumber.js';
+const ReconnectingWebsocket = require('reconnecting-websocket');
 
 /**
  * ### Background
@@ -19,17 +19,73 @@ import { BigNumber } from 'bignumber.js';
  * ```
  */
 export namespace Aqueduct {
-  let baseUrl: string;
-  // let apiKey: string | undefined;
-  export let socket: SocketIOClient.Socket;
+  export let socket: WebSocket;
+  let baseApiUrl: string;
+  let socketOpen = false;
+
+  let subscriptions: {
+    [channel: string]: {
+      callbacks: Array<(data: any) => void>,
+      resub: () => void,
+      subActive: boolean
+    } | undefined
+  } = {};
+
+  const send = (message: string, tries = 0) => {
+    if (socketOpen) {
+      socket.send(message);
+      return;
+    }
+
+    // retry for 20 seconds
+    if (tries < 20) {
+      setTimeout(() => {
+        send(message, tries + 1);
+      }, 250);
+    } else {
+      console.log('failed to send');
+    }
+  };
 
   /**
    * Initialize the Aqueduct client. Required to use the client.
    */
-  export const Initialize = (params: { baseUrl: string, apiKey?: string }) => {
-    baseUrl = params.baseUrl;
-    // apiKey = params.apiKey;
-    socket = io(baseUrl);
+  export const Initialize = (params: { host: string, apiKey?: string }) => {
+    baseApiUrl = `https://${params.host}`;
+    socket = new ReconnectingWebsocket(`wss:${params.host}`, undefined);
+
+    socket.onopen = () => {
+      Object.keys(subscriptions).map(k => subscriptions[k]).forEach(s => {
+        if (s && !s.subActive) {
+          s.resub();
+          s.subActive = true;
+        }
+      });
+      socketOpen = true;
+    };
+
+    socket.onclose = () => {
+      Object.keys(subscriptions).map(k => subscriptions[k]).forEach(s => {
+        if (s) {
+          s.subActive = false;
+        }
+      });
+      socketOpen = false;
+    };
+
+    socket.onmessage = event => {
+      try {
+        const data = JSON.parse(event.data) as { channel?: string; data: any };
+        if (data.channel) {
+          const sub = subscriptions[data.channel];
+          if (sub) {
+            sub.callbacks.forEach(cb => cb(data.data));
+          }
+        }
+      } catch(err) {
+        return;
+      }
+    };
   };
 
   /**
@@ -92,7 +148,7 @@ export namespace Aqueduct {
 
     /**
      * To set maintenance status from redis-cli:
-set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: true, \&quot;reason\&quot;: \&quot;We are currently performing maintenance on the database. Service will return as soon as possible.\&quot; }&quot;
+set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: true, \&quot;reason\&quot;: \&quot;We are currently performing maintenance on our Ethereum nodes. Service will return as soon as possible.\&quot; }&quot;
 
 or to turn off
 
@@ -246,7 +302,7 @@ PendingCancel (5)
        */
       txHash: string;
       /**
-       * State of the event: Pending(0), Complete (1)
+       * State of the event: Pending(0), Complete (1), Failed (2)
        */
       state: number;
       order: Order;
@@ -614,7 +670,7 @@ PendingCancel (5)
       public async get(params: IAggregatedOrdersGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/aggregated_orders`
+          url: `${baseApiUrl}/api/aggregated_orders`
         };
 
         requestParams.queryParameters = {
@@ -634,7 +690,7 @@ PendingCancel (5)
       public async get(params: IFeesGetParams) {
         const requestParams: IRequestParams = {
           method: 'POST',
-          url: `${baseUrl}/api/fees`
+          url: `${baseApiUrl}/api/fees`
         };
 
         requestParams.queryParameters = {
@@ -655,7 +711,7 @@ PendingCancel (5)
       public async getSupported() {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/networks`
+          url: `${baseApiUrl}/api/networks`
         };
         return this.executeRequest<INetwork[]>(requestParams);
       };
@@ -666,7 +722,7 @@ PendingCancel (5)
       public async isMaintenance() {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/networks/maintenance`
+          url: `${baseApiUrl}/api/networks/maintenance`
         };
         return this.executeRequest<IMaintenanceStatus>(requestParams);
       };
@@ -679,7 +735,7 @@ PendingCancel (5)
       public async get(params: INotificationsGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/notifications`
+          url: `${baseApiUrl}/api/notifications`
         };
 
         requestParams.queryParameters = {
@@ -696,7 +752,7 @@ PendingCancel (5)
       public async get(params: IOrdersGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/orders`
+          url: `${baseApiUrl}/api/orders`
         };
 
         requestParams.queryParameters = {
@@ -718,7 +774,7 @@ PendingCancel (5)
       public async getBest(params: IOrdersGetBestParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/orders/best`
+          url: `${baseApiUrl}/api/orders/best`
         };
 
         requestParams.queryParameters = {
@@ -740,7 +796,7 @@ PendingCancel (5)
       public async getHistorical(params: IReportsGetHistoricalParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/reports/historical`
+          url: `${baseApiUrl}/api/reports/historical`
         };
 
         requestParams.queryParameters = {
@@ -756,7 +812,7 @@ PendingCancel (5)
       public async getTickerData() {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/reports/ticker`
+          url: `${baseApiUrl}/api/reports/ticker`
         };
         return this.executeRequest<ITokenTicker[]>(requestParams);
       };
@@ -766,7 +822,7 @@ PendingCancel (5)
       public async getTokenPairs(params: IStandardGetTokenPairsParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/standard/${params.networkId}/v0/token_pairs`
+          url: `${baseApiUrl}/api/standard/${params.networkId}/v0/token_pairs`
         };
 
         requestParams.queryParameters = {
@@ -779,7 +835,7 @@ PendingCancel (5)
       public async getOrders(params: IStandardGetOrdersParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/standard/${params.networkId}/v0/orders`
+          url: `${baseApiUrl}/api/standard/${params.networkId}/v0/orders`
         };
 
         requestParams.queryParameters = {
@@ -800,7 +856,7 @@ PendingCancel (5)
       public async getOrderByHash(params: IStandardGetOrderByHashParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/standard/${params.networkId}/v0/order/${params.orderHash}`
+          url: `${baseApiUrl}/api/standard/${params.networkId}/v0/order/${params.orderHash}`
         };
         return this.executeRequest<IStandardOrder>(requestParams);
       };
@@ -808,7 +864,7 @@ PendingCancel (5)
       public async getFees(params: IStandardGetFeesParams) {
         const requestParams: IRequestParams = {
           method: 'POST',
-          url: `${baseUrl}/api/standard/${params.networkId}/v0/fees`
+          url: `${baseApiUrl}/api/standard/${params.networkId}/v0/fees`
         };
 
         requestParams.body = params.request;
@@ -821,7 +877,7 @@ PendingCancel (5)
       public async create(params: IStandardCreateParams) {
         const requestParams: IRequestParams = {
           method: 'POST',
-          url: `${baseUrl}/api/standard/${params.networkId}/v0/order`
+          url: `${baseApiUrl}/api/standard/${params.networkId}/v0/order`
         };
 
         requestParams.body = params.request;
@@ -831,7 +887,7 @@ PendingCancel (5)
       public async getOrderbook(params: IStandardGetOrderbookParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/standard/${params.networkId}/v0/orderbook`
+          url: `${baseApiUrl}/api/standard/${params.networkId}/v0/orderbook`
         };
 
         requestParams.queryParameters = {
@@ -851,7 +907,7 @@ PendingCancel (5)
       public async getByTaker(params: ITakerEventsGetByTakerParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/taker-events/taker`
+          url: `${baseApiUrl}/api/taker-events/taker`
         };
 
         requestParams.queryParameters = {
@@ -867,7 +923,7 @@ PendingCancel (5)
       public async getByPair(params: ITakerEventsGetByPairParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/taker-events/pair`
+          url: `${baseApiUrl}/api/taker-events/pair`
         };
 
         requestParams.queryParameters = {
@@ -887,7 +943,7 @@ PendingCancel (5)
       public async get(params: ITokenPairSummariesGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/token-pair-summaries/${params.networkId}`
+          url: `${baseApiUrl}/api/token-pair-summaries/${params.networkId}`
         };
         return this.executeRequest<ITokenPairSummary[]>(requestParams);
       };
@@ -900,7 +956,7 @@ PendingCancel (5)
       public async get(params: ITokenPairsGetParams) {
         const requestParams: IRequestParams = {
           method: 'GET',
-          url: `${baseUrl}/api/token-pairs/${params.networkId}`
+          url: `${baseApiUrl}/api/token-pairs/${params.networkId}`
         };
         return this.executeRequest<any>(requestParams);
       };
@@ -1046,7 +1102,7 @@ export interface TakerEvent {
    */
   txHash: string;
   /**
-   * State of the event: Pending(0), Complete (1)
+   * State of the event: Pending(0), Complete (1), Failed (2)
    */
   state: number;
   order: Order;
@@ -1164,7 +1220,7 @@ export interface TakerEvent {
    */
   txHash: string;
   /**
-   * State of the event: Pending(0), Complete (1)
+   * State of the event: Pending(0), Complete (1), Failed (2)
    */
   state: number;
   order: Order;
@@ -1315,7 +1371,7 @@ export interface TakerEvent {
    */
   txHash: string;
   /**
-   * State of the event: Pending(0), Complete (1)
+   * State of the event: Pending(0), Complete (1), Failed (2)
    */
   state: number;
   order: Order;
@@ -1475,16 +1531,21 @@ export interface ITokenTicker {
         this.params = params;
         this.callback = cb;
 
-        const subscribeFn = () => {
-          socket.emit('subscribe', this.getChannel(params));
-          socket.on(this.getChannel(params), this.callback);
-        };
-        subscribeFn();
+        const channel = this.getChannel(params);
+        send(`sub:${channel}`);
 
-        socket.on('reconnect', () => {
-          this.unsubscribe();
-          subscribeFn();
-        });
+        const sub = subscriptions[channel];
+        if (sub) {
+          sub.callbacks.push(this.callback);
+        } else {
+          subscriptions[channel] = {
+            callbacks: [this.callback],
+            resub: () => {
+              send(`sub:${channel}`)
+            },
+            subActive: true
+          };
+        }
 
         return this;
       }
@@ -1493,8 +1554,7 @@ export interface ITokenTicker {
        * Dispose of an active subscription
        */
       public unsubscribe() {
-        socket.off(this.getChannel(this.params), this.callback);
-        socket.emit('unsubscribe', this.getChannel(this.params));
+        send(`unsub:${this.getChannel(this.params)}`);
       }
 
       private getChannel(params: P) {

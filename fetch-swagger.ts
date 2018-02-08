@@ -23,6 +23,20 @@ const getSwaggerJson = () => {
 
 (async () => {
   const spec = await getSwaggerJson();
+
+  const info = spec.info as Swagger.Info & { 'x-logo': { url: string; }};
+
+  spec.host = 'api.ercdex.com';
+  spec.schemes = ['https'];
+
+  info['x-logo'] = {
+    url: '/images/light-logo.svg'
+  };
+
+  spec.info.contact = {
+    url: '/'
+  };
+
   fs.writeFileSync('./swagger.json', JSON.stringify(spec));
-  fs.writeFileSync('./docs/src/frames/swagger.json', JSON.stringify(spec));
+  fs.writeFileSync('./docs/src/swagger.json', JSON.stringify(spec));
 })();

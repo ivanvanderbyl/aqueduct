@@ -19,4 +19,4 @@ npm install aqueduct --save
 Usage examples can be found in the [examples directory](https://github.com/ERCdEX/aqueduct/tree/master/src/examples)
 
 ## Documentation
-Detailed documentation on this [JavaScript/Websocket client](https://aqueduct.ercdex.com/#/client) as well as a description of ERC dEX's implementation of the [Aqueduct API](https://aqueduct.ercdex.com/#/rest) can be found on the [ERC dEX Aqueduct documentation site](https://aqueduct.ercdex.com).
+Detailed documentation on this [JavaScript/Websocket client](https://aqueduct.ercdex.com/client/index.html) as well as a description of ERC dEX's implementation of the [Aqueduct API](https://aqueduct.ercdex.com/#/rest) can be found on the [ERC dEX Aqueduct documentation site](https://aqueduct.ercdex.com).

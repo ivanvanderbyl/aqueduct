@@ -2,11 +2,8 @@ export const paths = {
   home: {
     path: '/home'
   },
-  rest: {
-    path: '/rest'
-  },
-  client: {
-    path: '/client'
+  events: {
+    path: '/events'
   }
 };
 

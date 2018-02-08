@@ -78,23 +78,17 @@ const config = {
 
   plugins: [
     new CopyWebpackPlugin([
-      {
-        from: './src/images',
-        to: 'images'
-      },
-      {
-        from: './src/frames',
-        to: 'frames'
-      },
-      {
-        from: './src/favicon.ico',
-        to: './'
-      }
+      { from: './src/images', to: 'images' },
+      { from: './src/rest.html', to: './' },
+      { from: './src/swagger.json', to: './' },
+      { from: './src/favicon.ico', to: './' },
+      { from: './src/client', to: './client' },
+      { from: './src/events.json', to: './' }
     ]),
     new HtmlWebpackPlugin({
-      title: 'Aqueduct | ERC dExchange',
+      title: 'Aqueduct | ERC dEX',
       template: 'src/index.ejs'
-    }), 
+    }),
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin({
       filename: '[name].[hash].css'

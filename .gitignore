@@ -1,5 +1,5 @@
 node_modules
-docs/src/frames/typedoc
+docs/src/client
 docs/dist
 .DS_STORE
 dist

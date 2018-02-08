@@ -73,8 +73,8 @@ if (!baseApiUrl) {
 
 const template = (eventModelContent: string) => handlebars.compile(`/* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
-import * as io from 'socket.io-client';
 import { BigNumber } from 'bignumber.js';
+const ReconnectingWebsocket = require('reconnecting-websocket');
 
 /**
  * ### Background
@@ -92,17 +92,73 @@ import { BigNumber } from 'bignumber.js';
  * \`\`\`
  */
 export namespace Aqueduct {
-  let baseUrl: string;
-  // let apiKey: string | undefined;
-  export let socket: SocketIOClient.Socket;
+  export let socket: WebSocket;
+  let baseApiUrl: string;
+  let socketOpen = false;
+
+  let subscriptions: {
+    [channel: string]: {
+      callbacks: Array<(data: any) => void>,
+      resub: () => void,
+      subActive: boolean
+    } | undefined
+  } = {};
+
+  const send = (message: string, tries = 0) => {
+    if (socketOpen) {
+      socket.send(message);
+      return;
+    }
+
+    // retry for 20 seconds
+    if (tries < 20) {
+      setTimeout(() => {
+        send(message, tries + 1);
+      }, 250);
+    } else {
+      console.log('failed to send');
+    }
+  };
 
   /**
    * Initialize the Aqueduct client. Required to use the client.
    */
-  export const Initialize = (params: { baseUrl: string, apiKey?: string }) => {
-    baseUrl = params.baseUrl;
-    // apiKey = params.apiKey;
-    socket = io(baseUrl);
+  export const Initialize = (params: { host: string, apiKey?: string }) => {
+    baseApiUrl = \`https://\${params.host}\`;
+    socket = new ReconnectingWebsocket(\`wss:\${params.host}\`, undefined);
+
+    socket.onopen = () => {
+      Object.keys(subscriptions).map(k => subscriptions[k]).forEach(s => {
+        if (s && !s.subActive) {
+          s.resub();
+          s.subActive = true;
+        }
+      });
+      socketOpen = true;
+    };
+
+    socket.onclose = () => {
+      Object.keys(subscriptions).map(k => subscriptions[k]).forEach(s => {
+        if (s) {
+          s.subActive = false;
+        }
+      });
+      socketOpen = false;
+    };
+
+    socket.onmessage = event => {
+      try {
+        const data = JSON.parse(event.data) as { channel?: string; data: any };
+        if (data.channel) {
+          const sub = subscriptions[data.channel];
+          if (sub) {
+            sub.callbacks.forEach(cb => cb(data.data));
+          }
+        }
+      } catch(err) {
+        return;
+      }
+    };
   };
 
   /**
@@ -157,7 +213,7 @@ export namespace Aqueduct {
       public async {{id}}({{signature}}) {
         const requestParams: IRequestParams = {
           method: '{{method}}',
-          url: \`\${baseUrl}{{../../apiPath}}{{urlTemplate}}\`
+          url: \`\${baseApiUrl}{{../../apiPath}}{{urlTemplate}}\`
         };
         {{#if queryParameters}}
 
@@ -198,16 +254,21 @@ export namespace Aqueduct {
         this.params = params;
         this.callback = cb;
 
-        const subscribeFn = () => {
-          socket.emit('subscribe', this.getChannel(params));
-          socket.on(this.getChannel(params), this.callback);
-        };
-        subscribeFn();
+        const channel = this.getChannel(params);
+        send(\`sub:\${channel}\`);
 
-        socket.on('reconnect', () => {
-          this.unsubscribe();
-          subscribeFn();
-        });
+        const sub = subscriptions[channel];
+        if (sub) {
+          sub.callbacks.push(this.callback);
+        } else {
+          subscriptions[channel] = {
+            callbacks: [this.callback],
+            resub: () => {
+              send(\`sub:\${channel}\`)
+            },
+            subActive: true
+          };
+        }
 
         return this;
       }
@@ -216,8 +277,7 @@ export namespace Aqueduct {
        * Dispose of an active subscription
        */
       public unsubscribe() {
-        socket.off(this.getChannel(this.params), this.callback);
-        socket.emit('unsubscribe', this.getChannel(this.params));
+        send(\`unsub:\${this.getChannel(this.params)}\`);
       }
 
       private getChannel(params: P) {

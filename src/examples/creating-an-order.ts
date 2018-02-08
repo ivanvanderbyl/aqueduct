@@ -14,7 +14,7 @@ const networkId = 50;
  * Points to local API server
  * For production, point to https://api.ercdex.com
  */
-const apiUrl = 'http://localhost:8080';
+const apiUrl = 'localhost:8080';
 
 /**
  * Target ZRX/WETH orders
@@ -34,7 +34,7 @@ const unlockedAccountAddress = '0x6ecbe1db9ef729cbe972c83fb886247691fb6beb';
   /**
    * Initialize the Aqueduct client with the target API URL
    */
-  Aqueduct.Initialize({ baseUrl: apiUrl });
+  Aqueduct.Initialize({ host: apiUrl });
 
   const exchangeContractAddress = zeroEx.exchange.getContractAddress();
   const salt = ZeroEx.generatePseudoRandomSalt();
