@@ -73,7 +73,7 @@ export class Events extends React.Component {
     };
 
     return (
-      <div className='events oa p-bottom'>
+      <div className='events p-bottom'>
         <div className='outer-container'>
           <div className='content'>
             <div className='inner-container'>

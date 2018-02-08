@@ -5,12 +5,11 @@ $mobileCutoff: 500px;
 }
 
 .home {
-  background-color: #faf8f5;
   flex: 1;
   padding-bottom: 1rem;
 
-  @media(max-width: $mobileCutoff) {
-    padding: 0 1rem;
+  h1 {
+    font-size: 1.55rem;
   }
 }
 
@@ -19,14 +18,24 @@ $mobileCutoff: 500px;
   justify-content: center;
 }
 
-.content {
-  max-width: 500px;  
+.top {
+  background: linear-gradient(to bottom right, #ffffff -123%, #ffffff, transparent), url(/images/poly8.svg);
+}
 
-  .banner {
-    padding: 2rem 0 .5rem 0;
+.header-container {
+  width: 50%;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  padding-top: 12rem;
+  padding-bottom: 12rem;
 
-    @media(max-width: $mobileCutoff) {
-      padding: 2rem 0 1rem;
-    }
+  @media(max-width: 400px) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 12rem;
+  }
+
+  @media(max-width: 800px) {
+    width: 100%;
   }
 }
