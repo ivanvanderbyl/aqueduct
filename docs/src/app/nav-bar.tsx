@@ -63,7 +63,7 @@ export class NavBar extends React.Component<INavBarProps> {
 
   private readonly onResize = () => {
     if (this.navbarElement) {
-      if (this.navbarElement.clientHeight < document.documentElement.scrollTop) {
+      if (this.navbarElement.clientHeight < (window.pageYOffset || document.documentElement.scrollTop)) {
         this.isScrolled = true;
         return;
       }
