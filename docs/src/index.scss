@@ -3,36 +3,9 @@
 
 $pewter: #7EA1E4;
 
-.navbar {
-  background-color: #121215;
-
-  img {
-    padding: 1.25rem 1rem;    
-  }
-
-  .link {
-    font-weight: 100;
-    padding: 0 1rem;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #bbbbbb;
-
-    &.is-active {
-      color: $pewter;
-    }
-  }
-}
-
-.logo-container:hover, .navbar .link:hover {
-  background-color: #252525;
-}
-
 html {
-  background-color: #1d1d21;
-  color: #D8D8D8;
   font-family: 'Roboto', sans-serif;
+  font-weight: 100;
 }
 
 html, body {
@@ -63,6 +36,10 @@ body {
 
 .sb {
   justify-content: space-between;
+}
+
+.fe {
+  justify-content: flex-end;
 }
 
 .vc {

@@ -1,17 +1,13 @@
 import { Aqueduct } from '../generated/aqueduct';
 
-(async () => {
-  // required
-  Aqueduct.Initialize({
-    host: 'api.ercdex.com'
-  });
+// Initialize client
+Aqueduct.Initialize();
 
-  const subscription = new Aqueduct.Events.AccountNotification().subscribe({
-    account: 'XXXX'
-  }, data => {
-    console.log(data);
-  });
+const subscription = new Aqueduct.Events.AccountNotification().subscribe({
+  account: 'XXXX'
+}, data => {
+  console.log(data);
+});
 
-  // later
-  subscription.unsubscribe();
-})();
+// some time later
+subscription.unsubscribe();
