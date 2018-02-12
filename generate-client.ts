@@ -77,21 +77,6 @@ import { BigNumber } from 'bignumber.js';
 import { tokenCache, TokenCache } from '../token-cache';
 const ReconnectingWebsocket = require('reconnecting-websocket');
 
-/**
- * ### Background
- * Aqueduct is a protocol published by ERC dEX to faciliate the standardization of sharing liquidity among Øx protocol-compliant relayers. The Aqueduct protocol is outlined here and is embodied in this websocket client (documented below) and a REST API which is documented here.
- *
- * #### Rationale
- * While the Øx Project publishes a recommended relayer API specification that covers much of what relayers will need to share liquidity, additional functionality is needed to ensure timely, standardized information sharing. In particular, the ability to notify the entire network of pooled liquidity providers of an important change must be provided. This cannot be achieved via a traditional REST API without significant work on the part of each relayer.
- *
- * #### Goals for this version
- * This is a pre-alpha version of Aqueduct Client that is focused on simply standardizing a way of notifying liquidity partners of changes in orders placed on one-anothers' books.
- *
- * ### Installation
- * \`\`\`
- * npm install aqueduct
- * \`\`\`
- */
 export namespace Aqueduct {
   export let socket: WebSocket;
   let baseApiUrl: string;
@@ -243,7 +228,7 @@ export namespace Aqueduct {
         requestParams.body = params.{{bodyParameter}};
         {{/if}}
         return this.executeRequest<{{returnType}}>(requestParams);
-      };
+      }
       {{/operations}}
     }
     {{/services}}

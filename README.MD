@@ -182,7 +182,7 @@ Aqueduct.Initialize();
 
 ### WebSocket API Services
 
-Event related functions are contained within the "Events" namespace. All events follow a simple subscription model, taking in parameters and a callback to handle the event feed. Subscriptions must be managed by the client and unused subscriptions should be `unsubscribed`.
+Event related functions yare contained within the "Events" namespace. All events follow a simple subscription model, taking in parameters and a callback to handle the event feed. Subscriptions must be managed by the client and unused subscriptions should be `unsubscribed`.
 
 ```
 import { Aqueduct } from 'aqueduct';
@@ -200,3 +200,6 @@ const subscription = new Aqueduct.Events.AccountNotification().subscribe({
 subscription.unsubscribe();
 ```
 
+## SDK Technical Documentation
+
+Documentation on available imports and client APIs can be found [here.](https://aqueduct.ercdex.com/client/modules/_aqueduct_.html)

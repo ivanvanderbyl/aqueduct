@@ -74,7 +74,7 @@ export class Events extends React.Component {
 
     return (
       <div className='events p-bottom'>
-        <div className='outer-container'>
+        <div className='fl c'>
           <div className='content'>
             <div className='inner-container'>
               <h1>Introduction</h1>

@@ -36,7 +36,7 @@ export class Home extends React.Component<IHomeProps> {
             </p>
           </div>
           <div className='half-width fl c vc'>
-            <a href='https://github.com/ercdex/aqueduct' target='_blank' className='button'>Get the SDK</a>
+            <a href='https://github.com/ercdex/aqueduct#overview' target='_blank' className='button'>Get the SDK</a>
           </div>
         </div>
 

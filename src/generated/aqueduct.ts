@@ -4,21 +4,6 @@ import { BigNumber } from 'bignumber.js';
 import { tokenCache, TokenCache } from '../token-cache';
 const ReconnectingWebsocket = require('reconnecting-websocket');
 
-/**
- * ### Background
- * Aqueduct is a protocol published by ERC dEX to faciliate the standardization of sharing liquidity among Øx protocol-compliant relayers. The Aqueduct protocol is outlined here and is embodied in this websocket client (documented below) and a REST API which is documented here.
- *
- * #### Rationale
- * While the Øx Project publishes a recommended relayer API specification that covers much of what relayers will need to share liquidity, additional functionality is needed to ensure timely, standardized information sharing. In particular, the ability to notify the entire network of pooled liquidity providers of an important change must be provided. This cannot be achieved via a traditional REST API without significant work on the part of each relayer.
- *
- * #### Goals for this version
- * This is a pre-alpha version of Aqueduct Client that is focused on simply standardizing a way of notifying liquidity partners of changes in orders placed on one-anothers' books.
- *
- * ### Installation
- * ```
- * npm install aqueduct
- * ```
- */
 export namespace Aqueduct {
   export let socket: WebSocket;
   let baseApiUrl: string;
@@ -695,7 +680,7 @@ PendingCancel (5)
           maker: params.maker,
         };
         return this.executeRequest<IAggregatedOrderData>(requestParams);
-      };
+      }
     }
     export class FeesService extends ApiService {
 
@@ -716,7 +701,7 @@ PendingCancel (5)
           networkId: params.networkId,
         };
         return this.executeRequest<IFees>(requestParams);
-      };
+      }
     }
     export class NetworksService extends ApiService {
 
@@ -729,7 +714,7 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/networks`
         };
         return this.executeRequest<INetwork[]>(requestParams);
-      };
+      }
 
       /**
        * Determine if app is in maintenance mode
@@ -740,7 +725,7 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/networks/maintenance`
         };
         return this.executeRequest<IMaintenanceStatus>(requestParams);
-      };
+      }
     }
     export class NotificationsService extends ApiService {
 
@@ -757,7 +742,7 @@ PendingCancel (5)
           account: params.account,
         };
         return this.executeRequest<Notification[]>(requestParams);
-      };
+      }
     }
     export class OrdersService extends ApiService {
 
@@ -781,7 +766,7 @@ PendingCancel (5)
           isOpen: params.isOpen,
         };
         return this.executeRequest<Order[]>(requestParams);
-      };
+      }
 
       /**
        * Get the order(s) representing the best market price
@@ -801,7 +786,7 @@ PendingCancel (5)
           takerAddress: params.takerAddress,
         };
         return this.executeRequest<IMarketOrderQuote>(requestParams);
-      };
+      }
     }
     export class ReportsService extends ApiService {
 
@@ -822,7 +807,7 @@ PendingCancel (5)
           endDate: params.endDate,
         };
         return this.executeRequest<IDateSummary[]>(requestParams);
-      };
+      }
 
       public async getTickerData() {
         const requestParams: IRequestParams = {
@@ -830,7 +815,7 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/reports/ticker`
         };
         return this.executeRequest<ITokenTicker[]>(requestParams);
-      };
+      }
     }
     export class StandardService extends ApiService {
 
@@ -845,7 +830,7 @@ PendingCancel (5)
           page: params.page,
         };
         return this.executeRequest<IStandardTokenPair[]>(requestParams);
-      };
+      }
 
       public async getOrders(params: IStandardGetOrdersParams) {
         const requestParams: IRequestParams = {
@@ -866,7 +851,7 @@ PendingCancel (5)
           feeRecipient: params.feeRecipient,
         };
         return this.executeRequest<IStandardOrder[]>(requestParams);
-      };
+      }
 
       public async getOrderByHash(params: IStandardGetOrderByHashParams) {
         const requestParams: IRequestParams = {
@@ -874,7 +859,7 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/order/${params.orderHash}`
         };
         return this.executeRequest<IStandardOrder>(requestParams);
-      };
+      }
 
       public async getFees(params: IStandardGetFeesParams) {
         const requestParams: IRequestParams = {
@@ -884,7 +869,7 @@ PendingCancel (5)
 
         requestParams.body = params.request;
         return this.executeRequest<IFees>(requestParams);
-      };
+      }
 
       /**
        * Create an order
@@ -897,7 +882,7 @@ PendingCancel (5)
 
         requestParams.body = params.request;
         return this.executeRequest<Order>(requestParams);
-      };
+      }
 
       public async getOrderbook(params: IStandardGetOrderbookParams) {
         const requestParams: IRequestParams = {
@@ -912,7 +897,7 @@ PendingCancel (5)
           page: params.page,
         };
         return this.executeRequest<IStandardOrderbook>(requestParams);
-      };
+      }
     }
     export class TakerEventsService extends ApiService {
 
@@ -930,7 +915,7 @@ PendingCancel (5)
           taker: params.taker,
         };
         return this.executeRequest<TakerEvent[]>(requestParams);
-      };
+      }
 
       /**
        * Get Taker Events by token pair
@@ -948,7 +933,7 @@ PendingCancel (5)
           taker: params.taker,
         };
         return this.executeRequest<TakerEvent[]>(requestParams);
-      };
+      }
     }
     export class TokenPairSummariesService extends ApiService {
 
@@ -961,7 +946,7 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/token-pair-summaries/${params.networkId}`
         };
         return this.executeRequest<ITokenPairSummary[]>(requestParams);
-      };
+      }
     }
     export class TokenPairsService extends ApiService {
 
@@ -974,7 +959,7 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/token-pairs/${params.networkId}`
         };
         return this.executeRequest<any>(requestParams);
-      };
+      }
     }
   }
 
