@@ -35,13 +35,13 @@ export class NavBar extends React.Component<INavBarProps> {
           <div className='fl navbar-menu'>
             <a className='link' href='/rest.html'>Rest API</a>
             <NavLink activeClassName='is-active' to={getPath(paths.events)} className='link'>Events API</NavLink>
-            <a className='link' target='_blank' href='https://github.com/ercdex/aqueduct'>JavaScript SDK</a>
+            <a className='link' target='_blank' href='https://github.com/ercdex/aqueduct#aqueduct-javascript-sdk'>JavaScript SDK</a>
           </div>
           <div className='navbar-mobile-menu'>
             <i className='fa fa-bars' onClick={this.onClickMenu} />
             {this.menuActive && <div className='link-list'>
               <a className='link' href='/rest.html'>Rest API</a>
-              <a className='link' target='_blank' href='https://github.com/ercdex/aqueduct'>JavaScript SDK</a>
+              <a className='link' target='_blank' href='https://github.com/ercdex/aqueduct#aqueduct-javascript-sdk'>JavaScript SDK</a>
               <NavLink activeClassName='is-active' to={getPath(paths.events)} onClick={this.onClickMobileMenuItem} className='link'>Events API</NavLink>
             </div>}
           </div></div>
