@@ -64,7 +64,7 @@ export class Home extends React.Component<IHomeProps> {
           </div>
         </div>
 
-        <div className='section-container'>
+        <div className='section-container affiliate-relayers'>
           <h1>Interested in joining our relayer affiliate network?</h1>
           <p className='half-width'>
             We're offering a platform and portal for affiliate relayers, given you access to our fee sharing system and analytics on how your liquidity is being used on our platform.&nbsp;
@@ -75,7 +75,7 @@ export class Home extends React.Component<IHomeProps> {
           <h1 className='ta-r'>Interested in becoming one of our liquidity partners?</h1>
           <div className='fl fe'>
             <p className='half-width ta-r'>
-              We're creating a way for medium and large liquidity providers to easy tap into the rapidly growing decentralized trading space.&nbsp;
+              We're creating a way for medium and large liquidity providers to easily tap into the rapidly growing decentralized trading space.&nbsp;
               <a href='mailto:partners@ercdex.com'>Contact our team today</a> to speak with a representative and learn more about the platform.
             </p>
           </div>
