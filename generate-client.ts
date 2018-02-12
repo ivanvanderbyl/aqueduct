@@ -74,6 +74,7 @@ if (!baseApiUrl) {
 const template = (eventModelContent: string) => handlebars.compile(`/* tslint:disable */
 import { ApiService, IRequestParams } from '../api-service';
 import { BigNumber } from 'bignumber.js';
+import { tokenCache, TokenCache } from '../token-cache';
 const ReconnectingWebsocket = require('reconnecting-websocket');
 
 /**
@@ -94,6 +95,7 @@ const ReconnectingWebsocket = require('reconnecting-websocket');
 export namespace Aqueduct {
   export let socket: WebSocket;
   let baseApiUrl: string;
+  let hasWebSocket: boolean;
   let socketOpen = false;
 
   let subscriptions: {
@@ -123,9 +125,22 @@ export namespace Aqueduct {
   /**
    * Initialize the Aqueduct client. Required to use the client.
    */
-  export const Initialize = (params: { host: string, apiKey?: string }) => {
-    baseApiUrl = \`https://\${params.host}\`;
-    socket = new ReconnectingWebsocket(\`wss:\${params.host}\`, undefined);
+  export const Initialize = (params?: { host?: string; }) => {
+    const hasProcess = typeof process !== 'undefined' && process.env;
+    const host = (params && params.host) || (hasProcess && process.env.AQUEDUCT_HOST) || 'api.ercdex.com';
+    baseApiUrl = \`https://\${host}\`;
+
+    if (hasProcess && baseApiUrl.indexOf('localhost') !== -1) {
+      process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 as any;
+    }
+
+    hasWebSocket = typeof WebSocket !== 'undefined';
+    if (!hasWebSocket) {
+      console.warn('No WebSocket found in global namespace; subscriptions will not be configured.');
+      return;
+    }
+
+    socket = new ReconnectingWebsocket(\`wss:\${host}\`, undefined);
 
     socket.onopen = () => {
       Object.keys(subscriptions).map(k => subscriptions[k]).forEach(s => {
@@ -251,6 +266,10 @@ export namespace Aqueduct {
        * @param cb Handler for event broadcasts
        */
       public subscribe(params: P, cb: (data: R) => void) {
+        if (!hasWebSocket) {
+          throw new Error('WebSockets not configured.');
+        }
+
         this.params = params;
         this.callback = cb;
 
@@ -396,6 +415,26 @@ export namespace Aqueduct {
         takerTokenAmount: new BigNumber(order.takerTokenAmount)
       };
     };
+
+    export const convertOrderToSignedOrder = (order: Aqueduct.Api.Order): IZeroExSignedOrder => {
+      return {
+        ecSignature: JSON.parse(order.serializedEcSignature),
+        exchangeContractAddress: order.exchangeContractAddress,
+        expirationUnixTimestampSec: new BigNumber(order.expirationUnixTimestampSec),
+        feeRecipient: order.feeRecipient,
+        maker: order.maker,
+        makerFee: new BigNumber(order.makerFee),
+        makerTokenAddress: order.makerTokenAddress,
+        makerTokenAmount: new BigNumber(order.makerTokenAmount),
+        salt: new BigNumber(order.salt),
+        taker: order.taker,
+        takerFee: new BigNumber(order.takerFee),
+        takerTokenAddress: order.takerTokenAddress,
+        takerTokenAmount: new BigNumber(order.takerTokenAmount)
+      };
+    };
+
+    export const Tokens: TokenCache = tokenCache;
   }
 }
 `);
