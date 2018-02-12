@@ -67,7 +67,7 @@ export class Home extends React.Component<IHomeProps> {
         <div className='section-container affiliate-relayers'>
           <h1>Interested in joining our relayer affiliate network?</h1>
           <p className='half-width'>
-            We're offering a platform and portal for affiliate relayers, given you access to our fee sharing system and analytics on how your liquidity is being used on our platform.&nbsp;
+            We're offering a platform and portal for affiliate relayers, giving you access to our fee sharing system and analytics on how your liquidity is being used on our platform.&nbsp;
               <a href='mailto:partners@ercdex.com'>Contact our team</a> to get more information.
           </p>
         </div>
