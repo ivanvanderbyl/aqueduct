@@ -203,3 +203,9 @@ subscription.unsubscribe();
 ## SDK Technical Documentation
 
 Documentation on available imports and client APIs can be found [here.](https://aqueduct.ercdex.com/client/modules/_aqueduct_.html)
+
+## Developer Environment
+
+- Run 'yarn' at the root
+- Run 'yarn' at /docs
+- Run 'yarn start:docs' from root to start developer site
