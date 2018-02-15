@@ -1,9 +1,9 @@
 {
   "name": "aqueduct",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Aqueduct: API and Socket client for ERC dEX",
-  "main": "./dist/generated/index.js",
-  "typings": "./dist/generated/index.d.ts",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/ERCdEX/aqueduct.git"
