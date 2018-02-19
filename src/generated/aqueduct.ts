@@ -624,6 +624,9 @@ PendingCancel (5)
       quoteTokenAddress: string;
       per_page?: number;
       page?: number;
+      /**
+       * Origin of order. Possible values: &#x27;ercdex&#x27; | &#x27;radar-relay&#x27; | &#x27;all&#x27;
+       */
       source?: string;
     }
 
