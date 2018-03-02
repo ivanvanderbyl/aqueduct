@@ -10,11 +10,10 @@ export class Home extends React.Component<IHomeProps> {
         <div className='top'>
           <div className='section-container header-container'>
             <h1>
-              A protocol and tool set for sharing
-              global, decentralized liquidity on the Ethereum network, built by <strong><a
+              Tools for sharing decentralized liquidity on the Ethereum network, built by <strong><a
                 href='https://www.ercdex.com'
                 target='_blank'
-              >ERC dEX.</a></strong>
+              >ERC dEX</a></strong>
             </h1>
             <div className='getStarted'>
               <div className='icon-container'>
