@@ -5,6 +5,7 @@ export interface IRequestParams {
   method: string;
   url: string;
   queryParameters?: { [key: string]: string | boolean | number | Date | undefined };
+  apiKeyId?: string;
   body?: Object;
 }
 
@@ -13,6 +14,10 @@ export abstract class ApiService {
     return new Promise<T>((resolve, reject) => {
       let req = request(params.method, params.url)
         .set('Content-Type', 'application/json');
+
+      if (params.apiKeyId) {
+        req = req.set('X-API-KEY-ID', params.apiKeyId);
+      }
 
       const queryParameters = params.queryParameters;
       if (queryParameters) {

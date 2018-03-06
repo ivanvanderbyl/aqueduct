@@ -100,7 +100,24 @@ export class MarketOrder extends Web3EnabledService<string> {
     });
 
     try {
-      return await this.zeroEx.exchange.fillOrdersUpToAsync(orders.map(o => o.signedOrder), totalTakerAmount, true, this.params.account);
+      const txHash = await this.zeroEx.exchange.fillOrdersUpToAsync(orders.map(o => o.signedOrder), totalTakerAmount, true, this.params.account);
+
+      const apiKeyId = Aqueduct.getApiKeyId();
+      if (apiKeyId) {
+        try {
+          await new Aqueduct.Api.TransactionClaimsService().claim({
+            request: {
+              networkId: this.networkId,
+              txHash
+            }
+          });
+        } catch (err) {
+          console.error(`failed to claim txHash ${txHash}`);
+          console.error(err);
+        }
+      }
+
+      return txHash;
     } catch (err) {
       console.error('failed to fill orders');
       throw err;

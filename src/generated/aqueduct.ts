@@ -7,6 +7,7 @@ const ReconnectingWebsocket = require('reconnecting-websocket');
 export namespace Aqueduct {
   export let socket: WebSocket;
   let baseApiUrl: string;
+  let apiKeyId: string | undefined;
   let hasWebSocket: boolean;
   let socketOpen = false;
 
@@ -34,13 +35,19 @@ export namespace Aqueduct {
     }
   };
 
+  export const getApiKeyId = () => apiKeyId;
+
   /**
    * Initialize the Aqueduct client. Required to use the client.
    */
-  export const Initialize = (params?: { host?: string; }) => {
+  export const Initialize = (params?: { host?: string; apiKeyId?: string; }) => {
     const hasProcess = typeof process !== 'undefined' && process.env;
     const host = (params && params.host) || (hasProcess && process.env.AQUEDUCT_HOST) || 'api.ercdex.com';
     baseApiUrl = `https://${host}`;
+
+    if (params) {
+      apiKeyId = params.apiKeyId;
+    }
 
     if (hasProcess && baseApiUrl.indexOf('localhost') !== -1) {
       process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 as any;
@@ -165,6 +172,18 @@ Current status of app
      */
     export interface Notification {
       /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      /**
        * Hex address of account associated with notification
        */
       account: string;
@@ -176,6 +195,12 @@ Current status of app
        * Date the notification expires
        */
       expirationDate: Date;
+    }
+
+    /**
+     * An order that has been recorded on the ERC dEX Order Book
+     */
+    export interface Order {
       /**
        * Unique Identifier
        */
@@ -188,12 +213,6 @@ Current status of app
        * Date of updated
        */
       dateUpdated: Date;
-    }
-
-    /**
-     * An order that has been recorded on the ERC dEX Order Book
-     */
-    export interface Order {
       /**
        * Date on which the order was closed through fill, cancel, etc
        */
@@ -263,6 +282,10 @@ Current status of app
        */
       orderHash: string;
       /**
+       * Account ID of originator
+       */
+      accountId?: number;
+      /**
        * State of the order: Open (0), Canceled (1),
 Filled (2), Expired(3), Removed(4),
 PendingCancel (5)
@@ -270,6 +293,10 @@ PendingCancel (5)
       state: number;
       source: string;
       takerEvents: TakerEvent[];
+      account?: Account;
+    }
+
+    export interface TakerEvent {
       /**
        * Unique Identifier
        */
@@ -282,9 +309,6 @@ PendingCancel (5)
        * Date of updated
        */
       dateUpdated: Date;
-    }
-
-    export interface TakerEvent {
       /**
        * ID of the associated order
        */
@@ -306,6 +330,9 @@ PendingCancel (5)
        */
       state: number;
       order: Order;
+    }
+
+    export interface Account {
       /**
        * Unique Identifier
        */
@@ -318,6 +345,78 @@ PendingCancel (5)
        * Date of updated
        */
       dateUpdated: Date;
+      name: string;
+      city: string;
+      state: string;
+      country: string;
+      address: string;
+      users: User[];
+      apiKeys: ApiKey[];
+      orders: Order[];
+      transactionClaims: TransactionClaim[];
+    }
+
+    export interface User {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      email: string;
+      firstName: string;
+      lastName: string;
+      accountId: number;
+      account: Account;
+    }
+
+    export interface ApiKey {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      name: string;
+      keyId: string;
+      /**
+       * ignore
+       */
+      secret: string;
+      createdById: number;
+      accountId: number;
+      account: Account;
+    }
+
+    export interface TransactionClaim {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      txHash: string;
+      networkId: number;
+      accountId: number;
+      account: Account;
     }
 
     export interface IMarketOrderQuote {
@@ -480,11 +579,16 @@ PendingCancel (5)
       ask?: string;
     }
 
+    export interface IClaimTransactionRequest {
+      networkId: number;
+      txHash: string;
+    }
+
 
     export interface IAggregatedOrdersGetParams {
       networkId: number;
-      baseTokenAddress?: string;
-      quoteTokenAddress?: string;
+      baseTokenAddress: string;
+      quoteTokenAddress: string;
       maker?: string;
     }
 
@@ -669,6 +773,10 @@ PendingCancel (5)
        * ID of Ethereum network
        */
       networkId: number;
+    }
+
+    export interface ITransactionClaimsClaimParams {
+      request: IClaimTransactionRequest;
     }
     export class AggregatedOrdersService extends ApiService {
 
@@ -874,6 +982,7 @@ PendingCancel (5)
         };
 
         requestParams.body = params.request;
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IFees>(requestParams);
       }
 
@@ -887,6 +996,7 @@ PendingCancel (5)
         };
 
         requestParams.body = params.request;
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<Order>(requestParams);
       }
 
@@ -966,6 +1076,19 @@ PendingCancel (5)
           url: `${baseApiUrl}/api/token-pairs/${params.networkId}`
         };
         return this.executeRequest<any>(requestParams);
+      }
+    }
+    export class TransactionClaimsService extends ApiService {
+
+      public async claim(params: ITransactionClaimsClaimParams) {
+        const requestParams: IRequestParams = {
+          method: 'POST',
+          url: `${baseApiUrl}/api/transaction-claims`
+        };
+
+        requestParams.body = params.request;
+        requestParams.apiKeyId = apiKeyId;
+        return this.executeRequest<void>(requestParams);
       }
     }
   }
@@ -1070,6 +1193,10 @@ export interface Order {
    */
   orderHash: string;
   /**
+   * Account ID of originator
+   */
+  accountId?: number;
+  /**
    * State of the order: Open (0), Canceled (1),
    * Filled (2), Expired(3), Removed(4),
    * PendingCancel (5)
@@ -1077,6 +1204,7 @@ export interface Order {
   state: number;
   source: string;
   takerEvents: TakerEvent[];
+  account?: Account;
   /**
    * Unique Identifier
    */
@@ -1113,6 +1241,93 @@ export interface TakerEvent {
    */
   state: number;
   order: Order;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface Account {
+  name: string;
+  city: string;
+  state: string;
+  country: string;
+  address: string;
+  users: User[];
+  apiKeys: ApiKey[];
+  orders: Order[];
+  transactionClaims: TransactionClaim[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  accountId: number;
+  account: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface ApiKey {
+  name: string;
+  keyId: string;
+  /**
+   * ignore
+   */
+  secret: string;
+  createdById: number;
+  accountId: number;
+  account: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface TransactionClaim {
+  txHash: string;
+  networkId: number;
+  accountId: number;
+  account: Account;
   /**
    * Unique Identifier
    */
@@ -1318,6 +1533,10 @@ export interface Order {
    */
   orderHash: string;
   /**
+   * Account ID of originator
+   */
+  accountId?: number;
+  /**
    * State of the order: Open (0), Canceled (1),
    * Filled (2), Expired(3), Removed(4),
    * PendingCancel (5)
@@ -1325,6 +1544,94 @@ export interface Order {
   state: number;
   source: string;
   takerEvents: TakerEvent[];
+  account?: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface Account {
+  name: string;
+  city: string;
+  state: string;
+  country: string;
+  address: string;
+  users: User[];
+  apiKeys: ApiKey[];
+  orders: Order[];
+  transactionClaims: TransactionClaim[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  accountId: number;
+  account: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface ApiKey {
+  name: string;
+  keyId: string;
+  /**
+   * ignore
+   */
+  secret: string;
+  createdById: number;
+  accountId: number;
+  account: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface TransactionClaim {
+  txHash: string;
+  networkId: number;
+  accountId: number;
+  account: Account;
   /**
    * Unique Identifier
    */
@@ -1469,6 +1776,10 @@ export interface Order {
    */
   orderHash: string;
   /**
+   * Account ID of originator
+   */
+  accountId?: number;
+  /**
    * State of the order: Open (0), Canceled (1),
    * Filled (2), Expired(3), Removed(4),
    * PendingCancel (5)
@@ -1476,6 +1787,94 @@ export interface Order {
   state: number;
   source: string;
   takerEvents: TakerEvent[];
+  account?: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface Account {
+  name: string;
+  city: string;
+  state: string;
+  country: string;
+  address: string;
+  users: User[];
+  apiKeys: ApiKey[];
+  orders: Order[];
+  transactionClaims: TransactionClaim[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  accountId: number;
+  account: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface ApiKey {
+  name: string;
+  keyId: string;
+  /**
+   * ignore
+   */
+  secret: string;
+  createdById: number;
+  accountId: number;
+  account: Account;
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface TransactionClaim {
+  txHash: string;
+  networkId: number;
+  accountId: number;
+  account: Account;
   /**
    * Unique Identifier
    */

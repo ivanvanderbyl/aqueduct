@@ -37,7 +37,24 @@ export class FillOrder extends Web3EnabledService<string> {
     const signedOrder = Aqueduct.Utils.convertStandardOrderToSignedOrder(order);
 
     try {
-      return await this.zeroEx.exchange.fillOrderAsync(signedOrder, this.params.takerAmountInWei, true, this.params.account);
+      const txHash = await this.zeroEx.exchange.fillOrderAsync(signedOrder, this.params.takerAmountInWei, true, this.params.account);
+
+      const apiKeyId = Aqueduct.getApiKeyId();
+      if (apiKeyId) {
+        try {
+          await new Aqueduct.Api.TransactionClaimsService().claim({
+            request: {
+              networkId: this.networkId,
+              txHash
+            }
+          });
+        } catch (err) {
+          console.error(`failed to claim txHash ${txHash}`);
+          console.error(err);
+        }
+      }
+
+      return txHash;
     } catch (err) {
       console.error('error filling the order');
       throw err;
