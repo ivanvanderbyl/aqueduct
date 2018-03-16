@@ -80,6 +80,7 @@ const ReconnectingWebsocket = require('reconnecting-websocket');
 export namespace Aqueduct {
   export let socket: WebSocket;
   let baseApiUrl: string;
+  let apiKeyId: string | undefined;
   let hasWebSocket: boolean;
   let socketOpen = false;
 
@@ -107,13 +108,19 @@ export namespace Aqueduct {
     }
   };
 
+  export const getApiKeyId = () => apiKeyId;
+
   /**
    * Initialize the Aqueduct client. Required to use the client.
    */
-  export const Initialize = (params?: { host?: string; }) => {
+  export const Initialize = (params?: { host?: string; apiKeyId?: string; }) => {
     const hasProcess = typeof process !== 'undefined' && process.env;
     const host = (params && params.host) || (hasProcess && process.env.AQUEDUCT_HOST) || 'api.ercdex.com';
     baseApiUrl = \`https://\${host}\`;
+
+    if (params) {
+      apiKeyId = params.apiKeyId;
+    }
 
     if (hasProcess && baseApiUrl.indexOf('localhost') !== -1) {
       process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 as any;
@@ -226,6 +233,7 @@ export namespace Aqueduct {
         {{#if hasBodyParameter}}
 
         requestParams.body = params.{{bodyParameter}};
+        requestParams.apiKeyId = apiKeyId;
         {{/if}}
         return this.executeRequest<{{returnType}}>(requestParams);
       }
