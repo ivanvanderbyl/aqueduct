@@ -47,6 +47,10 @@
         s.src = 'https://widget.intercom.io/widget/oib7iae8';
         var x = d.getElementsByTagName('script')[0];
         x.parentNode.insertBefore(s, x);
+
+        window.Intercom('boot', {
+          app_id: 's8j8gds8'
+        });
       }
       if (w.attachEvent) {
         w.attachEvent('onload', l);
