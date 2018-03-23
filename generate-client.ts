@@ -72,7 +72,7 @@ if (!baseApiUrl) {
 }
 
 const template = (eventModelContent: string) => handlebars.compile(`/* tslint:disable */
-import { ApiService, IRequestParams } from '../api-service';
+import { ApiService, IAdditionalHeaders, IRequestParams } from '../api-service';
 import { BigNumber } from 'bignumber.js';
 import { tokenCache, TokenCache } from '../token-cache';
 const ReconnectingWebsocket = require('reconnecting-websocket');
@@ -235,7 +235,7 @@ export namespace Aqueduct {
         requestParams.body = params.{{bodyParameter}};
         requestParams.apiKeyId = apiKeyId;
         {{/if}}
-        return this.executeRequest<{{returnType}}>(requestParams);
+        return this.executeRequest<{{returnType}}>(requestParams, headers);
       }
       {{/operations}}
     }
@@ -587,6 +587,9 @@ const getTemplateView = (swagger: Swagger.ISpec, eventSchema: IEventsSchema): IT
                 bodyParameter = parameterName;
               }
             });
+            signature += ', headers?: IAdditionalHeaders';
+          } else {
+            signature = 'headers?: IAdditionalHeaders';
           }
 
           let returnType = 'void';

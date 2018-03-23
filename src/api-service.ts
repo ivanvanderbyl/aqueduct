@@ -9,14 +9,24 @@ export interface IRequestParams {
   body?: Object;
 }
 
+export interface IAdditionalHeaders {
+  [key: string]: any;
+}
+
 export abstract class ApiService {
-  protected executeRequest<T>(params: IRequestParams) {
+  protected executeRequest<T>(params: IRequestParams, headers?: IAdditionalHeaders) {
     return new Promise<T>((resolve, reject) => {
       let req = request(params.method, params.url)
         .set('Content-Type', 'application/json');
 
       if (params.apiKeyId) {
         req = req.set('X-API-KEY-ID', params.apiKeyId);
+      }
+
+      if (headers) {
+        Object.keys(headers).forEach(key => {
+          req = req.set(key, headers[key]);
+        });
       }
 
       const queryParameters = params.queryParameters;

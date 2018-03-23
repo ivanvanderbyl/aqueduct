@@ -1,5 +1,5 @@
 /* tslint:disable */
-import { ApiService, IRequestParams } from '../api-service';
+import { ApiService, IAdditionalHeaders, IRequestParams } from '../api-service';
 import { BigNumber } from 'bignumber.js';
 import { tokenCache, TokenCache } from '../token-cache';
 const ReconnectingWebsocket = require('reconnecting-websocket');
@@ -780,7 +780,7 @@ PendingCancel (5)
     }
     export class AggregatedOrdersService extends ApiService {
 
-      public async get(params: IAggregatedOrdersGetParams) {
+      public async get(params: IAggregatedOrdersGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/aggregated_orders`
@@ -792,7 +792,7 @@ PendingCancel (5)
           quoteTokenAddress: params.quoteTokenAddress,
           maker: params.maker,
         };
-        return this.executeRequest<IAggregatedOrderData>(requestParams);
+        return this.executeRequest<IAggregatedOrderData>(requestParams, headers);
       }
     }
     export class FeesService extends ApiService {
@@ -800,7 +800,7 @@ PendingCancel (5)
       /**
        * Get fees for an order of described parameters
        */
-      public async get(params: IFeesGetParams) {
+      public async get(params: IFeesGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'POST',
           url: `${baseApiUrl}/api/fees`
@@ -813,7 +813,7 @@ PendingCancel (5)
           takerTokenAmount: params.takerTokenAmount,
           networkId: params.networkId,
         };
-        return this.executeRequest<IFees>(requestParams);
+        return this.executeRequest<IFees>(requestParams, headers);
       }
     }
     export class NetworksService extends ApiService {
@@ -821,23 +821,23 @@ PendingCancel (5)
       /**
        * Get a list of supported networks
        */
-      public async getSupported() {
+      public async getSupported(headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/networks`
         };
-        return this.executeRequest<INetwork[]>(requestParams);
+        return this.executeRequest<INetwork[]>(requestParams, headers);
       }
 
       /**
        * Determine if app is in maintenance mode
        */
-      public async isMaintenance() {
+      public async isMaintenance(headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/networks/maintenance`
         };
-        return this.executeRequest<IMaintenanceStatus>(requestParams);
+        return this.executeRequest<IMaintenanceStatus>(requestParams, headers);
       }
     }
     export class NotificationsService extends ApiService {
@@ -845,7 +845,7 @@ PendingCancel (5)
       /**
        * Get active notifications for an account
        */
-      public async get(params: INotificationsGetParams) {
+      public async get(params: INotificationsGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/notifications`
@@ -854,7 +854,7 @@ PendingCancel (5)
         requestParams.queryParameters = {
           account: params.account,
         };
-        return this.executeRequest<Notification[]>(requestParams);
+        return this.executeRequest<Notification[]>(requestParams, headers);
       }
     }
     export class OrdersService extends ApiService {
@@ -862,7 +862,7 @@ PendingCancel (5)
       /**
        * Get list of orders
        */
-      public async get(params: IOrdersGetParams) {
+      public async get(params: IOrdersGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/orders`
@@ -878,13 +878,13 @@ PendingCancel (5)
           includeExternal: params.includeExternal,
           isOpen: params.isOpen,
         };
-        return this.executeRequest<Order[]>(requestParams);
+        return this.executeRequest<Order[]>(requestParams, headers);
       }
 
       /**
        * Get the order(s) representing the best market price
        */
-      public async getBest(params: IOrdersGetBestParams) {
+      public async getBest(params: IOrdersGetBestParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/orders/best`
@@ -898,7 +898,7 @@ PendingCancel (5)
           networkId: params.networkId,
           takerAddress: params.takerAddress,
         };
-        return this.executeRequest<IMarketOrderQuote>(requestParams);
+        return this.executeRequest<IMarketOrderQuote>(requestParams, headers);
       }
     }
     export class ReportsService extends ApiService {
@@ -906,7 +906,7 @@ PendingCancel (5)
       /**
        * Get historical data for order book
        */
-      public async getHistorical(params: IReportsGetHistoricalParams) {
+      public async getHistorical(params: IReportsGetHistoricalParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/reports/historical`
@@ -919,20 +919,20 @@ PendingCancel (5)
           startDate: params.startDate,
           endDate: params.endDate,
         };
-        return this.executeRequest<IDateSummary[]>(requestParams);
+        return this.executeRequest<IDateSummary[]>(requestParams, headers);
       }
 
-      public async getTickerData() {
+      public async getTickerData(headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/reports/ticker`
         };
-        return this.executeRequest<ITokenTicker[]>(requestParams);
+        return this.executeRequest<ITokenTicker[]>(requestParams, headers);
       }
     }
     export class StandardService extends ApiService {
 
-      public async getTokenPairs(params: IStandardGetTokenPairsParams) {
+      public async getTokenPairs(params: IStandardGetTokenPairsParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/token_pairs`
@@ -942,10 +942,10 @@ PendingCancel (5)
           per_page: params.per_page,
           page: params.page,
         };
-        return this.executeRequest<IStandardTokenPair[]>(requestParams);
+        return this.executeRequest<IStandardTokenPair[]>(requestParams, headers);
       }
 
-      public async getOrders(params: IStandardGetOrdersParams) {
+      public async getOrders(params: IStandardGetOrdersParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/orders`
@@ -964,18 +964,18 @@ PendingCancel (5)
           feeRecipient: params.feeRecipient,
           source: params.source,
         };
-        return this.executeRequest<IStandardOrder[]>(requestParams);
+        return this.executeRequest<IStandardOrder[]>(requestParams, headers);
       }
 
-      public async getOrderByHash(params: IStandardGetOrderByHashParams) {
+      public async getOrderByHash(params: IStandardGetOrderByHashParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/order/${params.orderHash}`
         };
-        return this.executeRequest<IStandardOrder>(requestParams);
+        return this.executeRequest<IStandardOrder>(requestParams, headers);
       }
 
-      public async getFees(params: IStandardGetFeesParams) {
+      public async getFees(params: IStandardGetFeesParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'POST',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/fees`
@@ -983,13 +983,13 @@ PendingCancel (5)
 
         requestParams.body = params.request;
         requestParams.apiKeyId = apiKeyId;
-        return this.executeRequest<IFees>(requestParams);
+        return this.executeRequest<IFees>(requestParams, headers);
       }
 
       /**
        * Create an order
        */
-      public async create(params: IStandardCreateParams) {
+      public async create(params: IStandardCreateParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'POST',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/order`
@@ -997,10 +997,10 @@ PendingCancel (5)
 
         requestParams.body = params.request;
         requestParams.apiKeyId = apiKeyId;
-        return this.executeRequest<Order>(requestParams);
+        return this.executeRequest<Order>(requestParams, headers);
       }
 
-      public async getOrderbook(params: IStandardGetOrderbookParams) {
+      public async getOrderbook(params: IStandardGetOrderbookParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/orderbook`
@@ -1013,7 +1013,7 @@ PendingCancel (5)
           page: params.page,
           source: params.source,
         };
-        return this.executeRequest<IStandardOrderbook>(requestParams);
+        return this.executeRequest<IStandardOrderbook>(requestParams, headers);
       }
     }
     export class TakerEventsService extends ApiService {
@@ -1021,7 +1021,7 @@ PendingCancel (5)
       /**
        * Get Taker Events
        */
-      public async getByTaker(params: ITakerEventsGetByTakerParams) {
+      public async getByTaker(params: ITakerEventsGetByTakerParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/taker-events/taker`
@@ -1031,13 +1031,13 @@ PendingCancel (5)
           networkId: params.networkId,
           taker: params.taker,
         };
-        return this.executeRequest<TakerEvent[]>(requestParams);
+        return this.executeRequest<TakerEvent[]>(requestParams, headers);
       }
 
       /**
        * Get Taker Events by token pair
        */
-      public async getByPair(params: ITakerEventsGetByPairParams) {
+      public async getByPair(params: ITakerEventsGetByPairParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/taker-events/pair`
@@ -1049,7 +1049,7 @@ PendingCancel (5)
           takerTokenAddress: params.takerTokenAddress,
           taker: params.taker,
         };
-        return this.executeRequest<TakerEvent[]>(requestParams);
+        return this.executeRequest<TakerEvent[]>(requestParams, headers);
       }
     }
     export class TokenPairSummariesService extends ApiService {
@@ -1057,12 +1057,12 @@ PendingCancel (5)
       /**
        * Get a list of token pair summaries
        */
-      public async get(params: ITokenPairSummariesGetParams) {
+      public async get(params: ITokenPairSummariesGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/token-pair-summaries/${params.networkId}`
         };
-        return this.executeRequest<ITokenPairSummary[]>(requestParams);
+        return this.executeRequest<ITokenPairSummary[]>(requestParams, headers);
       }
     }
     export class TokenPairsService extends ApiService {
@@ -1070,17 +1070,17 @@ PendingCancel (5)
       /**
        * Get a list of supported token pairs
        */
-      public async get(params: ITokenPairsGetParams) {
+      public async get(params: ITokenPairsGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'GET',
           url: `${baseApiUrl}/api/token-pairs/${params.networkId}`
         };
-        return this.executeRequest<any>(requestParams);
+        return this.executeRequest<any>(requestParams, headers);
       }
     }
     export class TransactionClaimsService extends ApiService {
 
-      public async claim(params: ITransactionClaimsClaimParams) {
+      public async claim(params: ITransactionClaimsClaimParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
           method: 'POST',
           url: `${baseApiUrl}/api/transaction-claims`
@@ -1088,7 +1088,7 @@ PendingCancel (5)
 
         requestParams.body = params.request;
         requestParams.apiKeyId = apiKeyId;
-        return this.executeRequest<void>(requestParams);
+        return this.executeRequest<void>(requestParams, headers);
       }
     }
   }
