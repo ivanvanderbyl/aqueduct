@@ -433,6 +433,13 @@ PendingCancel (5)
       volume?: number;
     }
 
+    export interface IHistoricalDataRequest {
+      networkId: number;
+      baseTokenAddress: string;
+      quoteTokenAddress: string;
+      startDate: Date;
+    }
+
     export interface ITokenTicker {
       id: string;
       name: string;
@@ -664,26 +671,7 @@ PendingCancel (5)
     }
 
     export interface IReportsGetHistoricalParams {
-      /**
-       * ID of Ethereum network
-       */
-      networkId: number;
-      /**
-       * Address of maker token
-       */
-      makerTokenAddress: string;
-      /**
-       * Address of taker token
-       */
-      takerTokenAddress: string;
-      /**
-       * Start Date
-       */
-      startDate: Date;
-      /**
-       * End Date
-       */
-      endDate: Date;
+      request: IHistoricalDataRequest;
     }
 
     export interface IStandardGetTokenPairsParams {
@@ -908,17 +896,12 @@ PendingCancel (5)
        */
       public async getHistorical(params: IReportsGetHistoricalParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
-          method: 'GET',
+          method: 'POST',
           url: `${baseApiUrl}/api/reports/historical`
         };
 
-        requestParams.queryParameters = {
-          networkId: params.networkId,
-          makerTokenAddress: params.makerTokenAddress,
-          takerTokenAddress: params.takerTokenAddress,
-          startDate: params.startDate,
-          endDate: params.endDate,
-        };
+        requestParams.body = params.request;
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IDateSummary[]>(requestParams, headers);
       }
 
@@ -983,7 +966,7 @@ PendingCancel (5)
 
         requestParams.body = params.request;
         requestParams.apiKeyId = apiKeyId;
-        return this.executeRequest<IFees>(requestParams, headers);
+        return this.executeRequest<any>(requestParams, headers);
       }
 
       /**
