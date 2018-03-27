@@ -604,6 +604,8 @@ PendingCancel (5)
       takerTokenAddress: string;
       makerTokenAmount: string;
       takerTokenAmount: string;
+      maker: string;
+      taker: string;
       networkId: number;
     }
 
@@ -799,6 +801,8 @@ PendingCancel (5)
           takerTokenAddress: params.takerTokenAddress,
           makerTokenAmount: params.makerTokenAmount,
           takerTokenAmount: params.takerTokenAmount,
+          maker: params.maker,
+          taker: params.taker,
           networkId: params.networkId,
         };
         return this.executeRequest<IFees>(requestParams, headers);

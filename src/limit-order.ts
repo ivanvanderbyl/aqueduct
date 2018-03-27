@@ -56,6 +56,8 @@ interface IValidateParams {
   tokenPair: Aqueduct.Api.ITokenPair;
 }
 
+export const nullAddress = '0x0000000000000000000000000000000000000000';
+
 export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
   constructor(private readonly params: ILimitOrderParams) {
     super(params.nodeUrl);
@@ -94,6 +96,8 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
         makerTokenAmount: makerTokenAmount.toString(),
         takerTokenAddress: takerToken.address,
         makerTokenAddress: makerToken.address,
+        maker: this.params.account,
+        taker: nullAddress,
         networkId,
         takerTokenAmount: takerTokenAmount.toString()
       });
@@ -130,7 +134,7 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       makerTokenAddress: makerToken.address,
       makerTokenAmount: new BigNumber(makerTokenAmount),
       salt: new BigNumber(salt),
-      taker: '0x0000000000000000000000000000000000000000',
+      taker: nullAddress,
       takerFee: new BigNumber(fees.takerFee),
       takerTokenAddress: takerToken.address,
       takerTokenAmount: new BigNumber(takerTokenAmount)
