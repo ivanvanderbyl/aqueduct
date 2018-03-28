@@ -151,6 +151,10 @@ export namespace Aqueduct {
        * Network endpoint
        */
       url: string;
+      /**
+       * For general, readonly querying
+       */
+      queryUrl: string;
     }
 
     /**
