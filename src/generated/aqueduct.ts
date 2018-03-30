@@ -578,6 +578,7 @@ PendingCancel (5)
       tokenA: IToken;
       tokenB: IToken;
       minimumQuantity: string;
+      priceDecimals: number;
       baseVolume: string;
       quoteVolume: string;
     }
