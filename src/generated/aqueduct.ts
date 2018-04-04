@@ -428,6 +428,14 @@ PendingCancel (5)
       orders: Order[];
     }
 
+    export interface IMarketOrderQuantityRequest {
+      takerQuantity: string;
+      maker: string;
+      takerTokenAddress: string;
+      makerTokenAddress: string;
+      networkId: number;
+    }
+
     export interface IDateSummary {
       date: Date;
       low?: number;
@@ -677,6 +685,10 @@ PendingCancel (5)
       takerAddress: string;
     }
 
+    export interface IOrdersGetMarketQuantityParams {
+      params: IMarketOrderQuantityRequest;
+    }
+
     export interface IReportsGetHistoricalParams {
       request: IHistoricalDataRequest;
     }
@@ -896,6 +908,17 @@ PendingCancel (5)
           takerAddress: params.takerAddress,
         };
         return this.executeRequest<IMarketOrderQuote>(requestParams, headers);
+      }
+
+      public async getMarketQuantity(params: IOrdersGetMarketQuantityParams, headers?: IAdditionalHeaders) {
+        const requestParams: IRequestParams = {
+          method: 'POST',
+          url: `${baseApiUrl}/api/orders/market-quantity`
+        };
+
+        requestParams.body = params.params;
+        requestParams.apiKeyId = apiKeyId;
+        return this.executeRequest<string>(requestParams, headers);
       }
     }
     export class ReportsService extends ApiService {
