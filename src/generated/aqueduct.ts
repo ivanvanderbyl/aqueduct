@@ -1090,7 +1090,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/token-pairs/${params.networkId}`
         };
-        return this.executeRequest<any>(requestParams, headers);
+        return this.executeRequest<ITokenPair[]>(requestParams, headers);
       }
     }
     export class TransactionClaimsService extends ApiService {
