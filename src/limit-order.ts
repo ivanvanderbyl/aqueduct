@@ -73,6 +73,10 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       throw new Error(`order quantity must be greater than minimum allowed amount: ${this.params.quantityInWei}/${tokenPair.minimumQuantity}`);
     }
 
+    if (!this.params.quantityInWei.isInt()) {
+      throw new Error(`order quantity must be an integer, got ${this.params.quantityInWei.toString()}`);
+    }
+
     let makerTokenAmount: BigNumber;
     let makerToken: Aqueduct.Api.IToken;
     let takerTokenAmount: BigNumber;
@@ -82,12 +86,12 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       makerToken = quoteToken;
       takerToken = baseToken;
       takerTokenAmount = this.params.quantityInWei;
-      makerTokenAmount = takerTokenAmount.times(this.params.price);
+      makerTokenAmount = takerTokenAmount.times(this.params.price).round();
     } else {
       makerToken = baseToken;
       takerToken = quoteToken;
       makerTokenAmount = this.params.quantityInWei;
-      takerTokenAmount = makerTokenAmount.times(this.params.price);
+      takerTokenAmount = makerTokenAmount.times(this.params.price).round();
     }
 
     let fees: Aqueduct.Api.IFees;
