@@ -30,8 +30,9 @@
     "ts-node": "ts-node"
   },
   "dependencies": {
+    "0x.js": "^0.36.0",
     "@0xproject/types": "^0.1.0",
-    "0x.js": "^0.27.2",
+    "@0xproject/typescript-typings": "^0.1.0",
     "@types/bignumber.js": "^4.0.3",
     "moment": "^2.19.1",
     "reconnecting-websocket": "^3.2.2",

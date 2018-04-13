@@ -2,6 +2,7 @@
 import { ApiService, IAdditionalHeaders, IRequestParams } from '../api-service';
 import { BigNumber } from 'bignumber.js';
 import { tokenCache, TokenCache } from '../token-cache';
+import { ZeroEx } from '0x.js';
 const ReconnectingWebsocket = require('reconnecting-websocket');
 
 export namespace Aqueduct {
@@ -2071,14 +2072,7 @@ export interface ITokenTicker {
       ecSignature: Api.IEcSignature;
     }
 
-    export interface IZeroExImplementation {
-      client: {
-        signOrderHashAsync(orderHash: string, maker: string): Promise<Api.IEcSignature>;
-      };
-      getOrderHashHex: (order: IZeroExOrder) => string;
-    }
-
-    export const signOrder = async (zeroEx: IZeroExImplementation, params: ISignOrderParams): Promise<Aqueduct.Api.IStandardOrderCreationRequest> => {
+    export const signOrder = async (zeroEx: ZeroEx, params: ISignOrderParams, shouldAddPersonalMessagePrefix = false): Promise<Aqueduct.Api.IStandardOrderCreationRequest> => {
       const order: IZeroExOrder = {
         maker: params.maker,
         taker: params.taker,
@@ -2094,8 +2088,8 @@ export interface ITokenTicker {
         expirationUnixTimestampSec: new BigNumber(params.expirationUnixTimestampSec)
       };
 
-      const orderHash = zeroEx.getOrderHashHex(order);
-      const ecSignature = await zeroEx.client.signOrderHashAsync(orderHash, params.maker);
+      const orderHash = ZeroEx.getOrderHashHex(order);
+      const ecSignature = await zeroEx.signOrderHashAsync(orderHash, params.maker, shouldAddPersonalMessagePrefix);
 
       return {
         maker: params.maker,

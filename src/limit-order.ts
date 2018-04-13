@@ -147,10 +147,7 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
     let signedOrder: Aqueduct.Api.IStandardOrderCreationRequest;
     try {
       console.log('signing order...');
-      signedOrder = await Aqueduct.Utils.signOrder({
-        client: zeroEx,
-        getOrderHashHex: ZeroEx.getOrderHashHex
-      }, signOrderParams);
+      signedOrder = await Aqueduct.Utils.signOrder(zeroEx, signOrderParams);
     } catch (err) {
       console.error('failed to sign order');
       throw err;
