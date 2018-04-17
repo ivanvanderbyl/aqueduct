@@ -659,6 +659,10 @@ PendingCancel (5)
       isOpen?: boolean;
     }
 
+    export interface IOrdersGetByIdParams {
+      orderId: number;
+    }
+
     export interface IOrdersGetBestParams {
       /**
        * Address of maker token
@@ -889,6 +893,14 @@ PendingCancel (5)
           isOpen: params.isOpen,
         };
         return this.executeRequest<Order[]>(requestParams, headers);
+      }
+
+      public async getById(params: IOrdersGetByIdParams, headers?: IAdditionalHeaders) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseApiUrl}/api/orders/by_id/${params.orderId}`
+        };
+        return this.executeRequest<Order>(requestParams, headers);
       }
 
       /**
