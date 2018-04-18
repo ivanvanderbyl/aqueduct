@@ -134,7 +134,7 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
 
     const expirationUnixTimestampSec = !this.params.expirationDate
       ? 4102444800
-      : this.params.expirationDate.getTime() / 1000;
+      : Math.floor(this.params.expirationDate.getTime() / 1000);
 
     const signOrderParams: Aqueduct.Utils.ISignOrderParams = {
       exchangeContractAddress,
