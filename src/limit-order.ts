@@ -44,6 +44,13 @@ export interface ILimitOrderParams {
    * Expiration of order - defaults to Good til Canceled
    */
   expirationDate?: Date;
+
+  /**
+   * https://github.com/0xProject/0x-monorepo/pull/349
+   *
+   * Some signers add the personal prefix themselves, some don't
+   */
+  shouldAddPersonalMessagePrefix?: boolean;
 }
 
 interface IValidateParams {
@@ -147,7 +154,7 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
     let signedOrder: Aqueduct.Api.IStandardOrderCreationRequest;
     try {
       console.log('signing order...');
-      signedOrder = await Aqueduct.Utils.signOrder(zeroEx, signOrderParams);
+      signedOrder = await Aqueduct.Utils.signOrder(zeroEx, signOrderParams, !!this.params.shouldAddPersonalMessagePrefix);
     } catch (err) {
       console.error('failed to sign order');
       throw err;
