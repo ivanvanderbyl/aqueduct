@@ -234,8 +234,8 @@ export namespace Aqueduct {
         {{#if hasBodyParameter}}
 
         requestParams.body = params.{{bodyParameter}};
-        requestParams.apiKeyId = apiKeyId;
         {{/if}}
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<{{returnType}}>(requestParams, headers);
       }
       {{/operations}}

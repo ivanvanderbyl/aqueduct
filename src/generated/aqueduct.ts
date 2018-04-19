@@ -804,6 +804,7 @@ PendingCancel (5)
           quoteTokenAddress: params.quoteTokenAddress,
           maker: params.maker,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IAggregatedOrderData>(requestParams, headers);
       }
     }
@@ -827,6 +828,7 @@ PendingCancel (5)
           taker: params.taker,
           networkId: params.networkId,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IFees>(requestParams, headers);
       }
     }
@@ -840,6 +842,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/networks`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<INetwork[]>(requestParams, headers);
       }
 
@@ -851,6 +854,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/networks/maintenance`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IMaintenanceStatus>(requestParams, headers);
       }
     }
@@ -868,6 +872,7 @@ PendingCancel (5)
         requestParams.queryParameters = {
           account: params.account,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<Notification[]>(requestParams, headers);
       }
     }
@@ -892,6 +897,7 @@ PendingCancel (5)
           includeExternal: params.includeExternal,
           isOpen: params.isOpen,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<Order[]>(requestParams, headers);
       }
 
@@ -900,6 +906,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/orders/by_id/${params.orderId}`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<Order>(requestParams, headers);
       }
 
@@ -920,6 +927,7 @@ PendingCancel (5)
           networkId: params.networkId,
           takerAddress: params.takerAddress,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IMarketOrderQuote>(requestParams, headers);
       }
 
@@ -955,6 +963,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/reports/ticker`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<ITokenTicker[]>(requestParams, headers);
       }
     }
@@ -970,6 +979,7 @@ PendingCancel (5)
           per_page: params.per_page,
           page: params.page,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IStandardTokenPair[]>(requestParams, headers);
       }
 
@@ -992,6 +1002,7 @@ PendingCancel (5)
           feeRecipient: params.feeRecipient,
           source: params.source,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IStandardOrder[]>(requestParams, headers);
       }
 
@@ -1000,6 +1011,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/standard/${params.networkId}/v0/order/${params.orderHash}`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IStandardOrder>(requestParams, headers);
       }
 
@@ -1041,6 +1053,7 @@ PendingCancel (5)
           page: params.page,
           source: params.source,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IStandardOrderbook>(requestParams, headers);
       }
     }
@@ -1059,6 +1072,7 @@ PendingCancel (5)
           networkId: params.networkId,
           taker: params.taker,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<TakerEvent[]>(requestParams, headers);
       }
 
@@ -1077,6 +1091,7 @@ PendingCancel (5)
           takerTokenAddress: params.takerTokenAddress,
           taker: params.taker,
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<TakerEvent[]>(requestParams, headers);
       }
     }
@@ -1090,6 +1105,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/token-pair-summaries/${params.networkId}`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<ITokenPairSummary[]>(requestParams, headers);
       }
     }
@@ -1103,6 +1119,7 @@ PendingCancel (5)
           method: 'GET',
           url: `${baseApiUrl}/api/token-pairs/${params.networkId}`
         };
+        requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<ITokenPair[]>(requestParams, headers);
       }
     }
