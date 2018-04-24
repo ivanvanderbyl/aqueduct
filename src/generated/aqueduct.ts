@@ -790,7 +790,12 @@ PendingCancel (5)
     export interface ITransactionClaimsClaimParams {
       request: IClaimTransactionRequest;
     }
-    export class AggregatedOrdersService extends ApiService {
+    export interface IAggregatedOrdersService {
+
+      get(params: IAggregatedOrdersGetParams, headers?: IAdditionalHeaders): Promise<IAggregatedOrderData>;
+    }
+
+    export class AggregatedOrdersService extends ApiService implements IAggregatedOrdersService {
 
       public async get(params: IAggregatedOrdersGetParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
@@ -808,7 +813,15 @@ PendingCancel (5)
         return this.executeRequest<IAggregatedOrderData>(requestParams, headers);
       }
     }
-    export class FeesService extends ApiService {
+    export interface IFeesService {
+
+      /**
+       * Get fees for an order of described parameters
+       */
+      get(params: IFeesGetParams, headers?: IAdditionalHeaders): Promise<IFees>;
+    }
+
+    export class FeesService extends ApiService implements IFeesService {
 
       /**
        * Get fees for an order of described parameters
@@ -832,7 +845,20 @@ PendingCancel (5)
         return this.executeRequest<IFees>(requestParams, headers);
       }
     }
-    export class NetworksService extends ApiService {
+    export interface INetworksService {
+
+      /**
+       * Get a list of supported networks
+       */
+      getSupported(headers?: IAdditionalHeaders): Promise<INetwork[]>;
+
+      /**
+       * Determine if app is in maintenance mode
+       */
+      isMaintenance(headers?: IAdditionalHeaders): Promise<IMaintenanceStatus>;
+    }
+
+    export class NetworksService extends ApiService implements INetworksService {
 
       /**
        * Get a list of supported networks
@@ -858,7 +884,15 @@ PendingCancel (5)
         return this.executeRequest<IMaintenanceStatus>(requestParams, headers);
       }
     }
-    export class NotificationsService extends ApiService {
+    export interface INotificationsService {
+
+      /**
+       * Get active notifications for an account
+       */
+      get(params: INotificationsGetParams, headers?: IAdditionalHeaders): Promise<Notification[]>;
+    }
+
+    export class NotificationsService extends ApiService implements INotificationsService {
 
       /**
        * Get active notifications for an account
@@ -876,7 +910,24 @@ PendingCancel (5)
         return this.executeRequest<Notification[]>(requestParams, headers);
       }
     }
-    export class OrdersService extends ApiService {
+    export interface IOrdersService {
+
+      /**
+       * Get list of orders
+       */
+      get(params: IOrdersGetParams, headers?: IAdditionalHeaders): Promise<Order[]>;
+
+      getById(params: IOrdersGetByIdParams, headers?: IAdditionalHeaders): Promise<Order>;
+
+      /**
+       * Get the order(s) representing the best market price
+       */
+      getBest(params: IOrdersGetBestParams, headers?: IAdditionalHeaders): Promise<IMarketOrderQuote>;
+
+      getMarketQuantity(params: IOrdersGetMarketQuantityParams, headers?: IAdditionalHeaders): Promise<string>;
+    }
+
+    export class OrdersService extends ApiService implements IOrdersService {
 
       /**
        * Get list of orders
@@ -942,7 +993,17 @@ PendingCancel (5)
         return this.executeRequest<string>(requestParams, headers);
       }
     }
-    export class ReportsService extends ApiService {
+    export interface IReportsService {
+
+      /**
+       * Get historical data for order book
+       */
+      getHistorical(params: IReportsGetHistoricalParams, headers?: IAdditionalHeaders): Promise<IDateSummary[]>;
+
+      getTickerData(headers?: IAdditionalHeaders): Promise<ITokenTicker[]>;
+    }
+
+    export class ReportsService extends ApiService implements IReportsService {
 
       /**
        * Get historical data for order book
@@ -967,7 +1028,25 @@ PendingCancel (5)
         return this.executeRequest<ITokenTicker[]>(requestParams, headers);
       }
     }
-    export class StandardService extends ApiService {
+    export interface IStandardService {
+
+      getTokenPairs(params: IStandardGetTokenPairsParams, headers?: IAdditionalHeaders): Promise<IStandardTokenPair[]>;
+
+      getOrders(params: IStandardGetOrdersParams, headers?: IAdditionalHeaders): Promise<IStandardOrder[]>;
+
+      getOrderByHash(params: IStandardGetOrderByHashParams, headers?: IAdditionalHeaders): Promise<IStandardOrder>;
+
+      getFees(params: IStandardGetFeesParams, headers?: IAdditionalHeaders): Promise<any>;
+
+      /**
+       * Create an order
+       */
+      create(params: IStandardCreateParams, headers?: IAdditionalHeaders): Promise<Order>;
+
+      getOrderbook(params: IStandardGetOrderbookParams, headers?: IAdditionalHeaders): Promise<IStandardOrderbook>;
+    }
+
+    export class StandardService extends ApiService implements IStandardService {
 
       public async getTokenPairs(params: IStandardGetTokenPairsParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
@@ -1057,7 +1136,20 @@ PendingCancel (5)
         return this.executeRequest<IStandardOrderbook>(requestParams, headers);
       }
     }
-    export class TakerEventsService extends ApiService {
+    export interface ITakerEventsService {
+
+      /**
+       * Get Taker Events
+       */
+      getByTaker(params: ITakerEventsGetByTakerParams, headers?: IAdditionalHeaders): Promise<TakerEvent[]>;
+
+      /**
+       * Get Taker Events by token pair
+       */
+      getByPair(params: ITakerEventsGetByPairParams, headers?: IAdditionalHeaders): Promise<TakerEvent[]>;
+    }
+
+    export class TakerEventsService extends ApiService implements ITakerEventsService {
 
       /**
        * Get Taker Events
@@ -1095,7 +1187,15 @@ PendingCancel (5)
         return this.executeRequest<TakerEvent[]>(requestParams, headers);
       }
     }
-    export class TokenPairSummariesService extends ApiService {
+    export interface ITokenPairSummariesService {
+
+      /**
+       * Get a list of token pair summaries
+       */
+      get(params: ITokenPairSummariesGetParams, headers?: IAdditionalHeaders): Promise<ITokenPairSummary[]>;
+    }
+
+    export class TokenPairSummariesService extends ApiService implements ITokenPairSummariesService {
 
       /**
        * Get a list of token pair summaries
@@ -1109,7 +1209,15 @@ PendingCancel (5)
         return this.executeRequest<ITokenPairSummary[]>(requestParams, headers);
       }
     }
-    export class TokenPairsService extends ApiService {
+    export interface ITokenPairsService {
+
+      /**
+       * Get a list of supported token pairs
+       */
+      get(params: ITokenPairsGetParams, headers?: IAdditionalHeaders): Promise<ITokenPair[]>;
+    }
+
+    export class TokenPairsService extends ApiService implements ITokenPairsService {
 
       /**
        * Get a list of supported token pairs
@@ -1123,7 +1231,12 @@ PendingCancel (5)
         return this.executeRequest<ITokenPair[]>(requestParams, headers);
       }
     }
-    export class TransactionClaimsService extends ApiService {
+    export interface ITransactionClaimsService {
+
+      claim(params: ITransactionClaimsClaimParams, headers?: IAdditionalHeaders): Promise<void>;
+    }
+
+    export class TransactionClaimsService extends ApiService implements ITransactionClaimsService {
 
       public async claim(params: ITransactionClaimsClaimParams, headers?: IAdditionalHeaders) {
         const requestParams: IRequestParams = {
@@ -1968,6 +2081,11 @@ export interface ITokenTicker {
 }
 
 
+    export interface ISocketEvent<P extends { [key: string]: any }, R> {
+      subscribe(params: P, cb: (data: R) => void): this;
+      unsubscribe(): void;
+    }
+
     export abstract class SocketEvent<P extends { [key: string]: any }, R> {
       protected abstract path: string;
       private params: P;
@@ -2022,46 +2140,52 @@ export interface ITokenTicker {
         return channel;
       }
     }
+    export interface IPairOrderChange extends ISocketEvent<IPairOrderChangeEventParams, IOrderChangeEventData> {};
 
     /**
      * Order changes relating to a token pair
      */
-    export class PairOrderChange extends SocketEvent<IPairOrderChangeEventParams, IOrderChangeEventData> {
+    export class PairOrderChange extends SocketEvent<IPairOrderChangeEventParams, IOrderChangeEventData> implements IPairOrderChange {
       protected path = 'pair-order-change/:makerTokenAddress/:takerTokenAddress';
     }
+    export interface IAccountOrderChange extends ISocketEvent<IAccountOrderChangeEventParams, IOrderChangeEventData> {};
 
     /**
      * Order changes related to an account address
      */
-    export class AccountOrderChange extends SocketEvent<IAccountOrderChangeEventParams, IOrderChangeEventData> {
+    export class AccountOrderChange extends SocketEvent<IAccountOrderChangeEventParams, IOrderChangeEventData> implements IAccountOrderChange {
       protected path = 'account-order-change/:account';
     }
+    export interface IAccountNotification extends ISocketEvent<IAccountNotificationEventParams, IAccountNotificationEventData> {};
 
     /**
      * Notifications related to an account address
      */
-    export class AccountNotification extends SocketEvent<IAccountNotificationEventParams, IAccountNotificationEventData> {
+    export class AccountNotification extends SocketEvent<IAccountNotificationEventParams, IAccountNotificationEventData> implements IAccountNotification {
       protected path = 'account-notification/:account';
     }
+    export interface IPairTakerEvent extends ISocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {};
 
     /**
      * Taker events related to a token pair
      */
-    export class PairTakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> {
+    export class PairTakerEvent extends SocketEvent<IPairTakerEventEventParams, IPairTakerEventEventData> implements IPairTakerEvent {
       protected path = 'pair-taker-event/:makerTokenAddress/:takerTokenAddress';
     }
+    export interface IAccountTakerEvent extends ISocketEvent<IAccountTakerEventEventParams, IAccountTakerEventEventData> {};
 
     /**
      * Taker events related to an address
      */
-    export class AccountTakerEvent extends SocketEvent<IAccountTakerEventEventParams, IAccountTakerEventEventData> {
+    export class AccountTakerEvent extends SocketEvent<IAccountTakerEventEventParams, IAccountTakerEventEventData> implements IAccountTakerEvent {
       protected path = 'account-taker-event/:account';
     }
+    export interface ITickerSubscription extends ISocketEvent<ITickerSubscriptionParams, ITickerSubscriptionData> {};
 
     /**
      * Price Ticker Updates
      */
-    export class TickerSubscription extends SocketEvent<ITickerSubscriptionParams, ITickerSubscriptionData> {
+    export class TickerSubscription extends SocketEvent<ITickerSubscriptionParams, ITickerSubscriptionData> implements ITickerSubscription {
       protected path = 'ticker';
     }
   }

@@ -210,7 +210,19 @@ export namespace Aqueduct {
     {{/operations}}
     {{/services}}
     {{#services}}
-    export class {{name}} extends ApiService {
+    export interface I{{name}} {
+      {{#operations}}
+
+      {{#if description}}
+      /**
+       * {{description}}
+       */
+      {{/if}}
+      {{id}}({{signature}}): Promise<{{returnType}}>;
+      {{/operations}}
+    }
+
+    export class {{name}} extends ApiService implements I{{name}} {
       {{#operations}}
 
       {{#if description}}
@@ -248,6 +260,11 @@ export namespace Aqueduct {
    */
   export namespace Events {
     ${eventModelContent}
+
+    export interface ISocketEvent<P extends { [key: string]: any }, R> {
+      subscribe(params: P, cb: (data: R) => void): this;
+      unsubscribe(): void;
+    }
 
     export abstract class SocketEvent<P extends { [key: string]: any }, R> {
       protected abstract path: string;
@@ -304,11 +321,12 @@ export namespace Aqueduct {
       }
     }
     {{#events}}
+    export interface I{{operation}} extends ISocketEvent<{{params}}, {{returns}}> {};
 
     /**
      * {{description}}
      */
-    export class {{operation}} extends SocketEvent<{{params}}, {{returns}}> {
+    export class {{operation}} extends SocketEvent<{{params}}, {{returns}}> implements I{{operation}} {
       protected path = '{{path}}';
     }
     {{/events}}
