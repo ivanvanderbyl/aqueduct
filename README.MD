@@ -92,8 +92,7 @@ Market orders attempt to fill existing orders at the best price. Traders placing
 
 ```
 import { BigNumber } from 'bignumber.js';
-import { Aqueduct } from 'aqueduct';
-import { MarketOrder } from '../market-order';
+import { Aqueduct, MarketOrder } from 'aqueduct';
 
 // Initialize the Aqueduct client
 Aqueduct.Initialize();
@@ -119,8 +118,7 @@ You may want to fill a single order rather than using the more advanced Market O
 ```
 import { ZeroEx } from '0x.js';
 import { BigNumber } from 'bignumber.js';
-import { FillOrder } from '../fill-order';
-import { Aqueduct } from 'aqueduct';
+import { Aqueduct, FillOrder } from 'aqueduct';
 
 Aqueduct.Initialize();
 
@@ -142,8 +140,7 @@ Aqueduct.Initialize();
 Traders can cancel limit orders that they've opened.
 
 ```
-import { CancelOrder } from '../cancel-order';
-import { Aqueduct } from 'aqueduct';
+import { Aqueduct, CancelOrder } from 'aqueduct';
 
 (async () => {
   Aqueduct.Initialize();
@@ -154,6 +151,26 @@ import { Aqueduct } from 'aqueduct';
   }).execute();
 
   console.log(`order cancelled. tx: ${cancelTxHash}`);
+})();
+
+```
+
+#### "Soft" canceling an order
+
+Canceling an order on-chain incurs gas costs. Traders can 'soft' cancel an order that they've opened by providing a
+signed orderhash. This removes the order from the ERC dEX order book. However, trader should recognize that the order is still
+technically fillable by anyone that has the order metadata.
+
+```
+import { Aqueduct, SoftCancelOrder } from 'aqueduct';
+
+(async () => {
+  Aqueduct.Initialize();
+
+  await new SoftCancelOrder({
+    orderHash: '0x1ec30426e15451eb75d324c2b674f65b5a0acdcfab6bba772e3347c30296c5c6',
+    nodeUrl: 'http://localhost:8545'
+  }).execute();
 })();
 
 ```

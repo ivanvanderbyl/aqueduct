@@ -437,6 +437,11 @@ PendingCancel (5)
       networkId: number;
     }
 
+    export interface ISoftCancelOrderRequest {
+      orderHash: string;
+      signature: string;
+    }
+
     export interface IDateSummary {
       date: Date;
       low?: number;
@@ -694,6 +699,10 @@ PendingCancel (5)
       params: IMarketOrderQuantityRequest;
     }
 
+    export interface IOrdersSoftCancelOrderParams {
+      request: ISoftCancelOrderRequest;
+    }
+
     export interface IReportsGetHistoricalParams {
       request: IHistoricalDataRequest;
     }
@@ -925,6 +934,13 @@ PendingCancel (5)
       getBest(params: IOrdersGetBestParams, headers?: IAdditionalHeaders): Promise<IMarketOrderQuote>;
 
       getMarketQuantity(params: IOrdersGetMarketQuantityParams, headers?: IAdditionalHeaders): Promise<string>;
+
+      /**
+       * Removes the order from the order book with a valid signature
+Technically can still be filled by someone if they have the order cached elsewhere -
+Do on-chain cancellation for permanent cancelation
+       */
+      softCancelOrder(params: IOrdersSoftCancelOrderParams, headers?: IAdditionalHeaders): Promise<void>;
     }
 
     export class OrdersService extends ApiService implements IOrdersService {
@@ -991,6 +1007,22 @@ PendingCancel (5)
         requestParams.body = params.params;
         requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<string>(requestParams, headers);
+      }
+
+      /**
+       * Removes the order from the order book with a valid signature
+Technically can still be filled by someone if they have the order cached elsewhere -
+Do on-chain cancellation for permanent cancelation
+       */
+      public async softCancelOrder(params: IOrdersSoftCancelOrderParams, headers?: IAdditionalHeaders) {
+        const requestParams: IRequestParams = {
+          method: 'POST',
+          url: `${baseApiUrl}/api/orders/soft-cancel`
+        };
+
+        requestParams.body = params.request;
+        requestParams.apiKeyId = apiKeyId;
+        return this.executeRequest<void>(requestParams, headers);
       }
     }
     export interface IReportsService {
