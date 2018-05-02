@@ -171,6 +171,7 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       return createdOrder;
     } catch (err) {
       console.error('problem posting order to API');
+      console.error(err.message);
       throw err;
     }
   }
