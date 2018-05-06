@@ -12,6 +12,11 @@ export interface ICancelOrderParams {
    * Order Hash
    */
   orderHash: string;
+
+  /**
+   * Gas Price
+   */
+  gasPrice?: BigNumber;
 }
 
 /**
@@ -45,7 +50,9 @@ export class CancelOrder extends Web3EnabledService<string> {
     const signedOrder = Aqueduct.Utils.convertStandardOrderToSignedOrder(order);
 
     try {
-      return await this.zeroEx.exchange.cancelOrderAsync(signedOrder, new BigNumber(signedOrder.takerTokenAmount));
+      return await this.zeroEx.exchange.cancelOrderAsync(signedOrder, new BigNumber(signedOrder.takerTokenAmount), {
+        gasPrice: this.params.gasPrice
+      });
     } catch (err) {
       console.error('failed to cancel order');
       throw err;
