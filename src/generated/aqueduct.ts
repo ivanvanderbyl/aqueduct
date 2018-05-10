@@ -108,7 +108,6 @@ export namespace Aqueduct {
     }
 
     export interface IOrderBookListing {
-      volume: string;
       priceLevels: IPriceLevel[];
     }
 
@@ -158,7 +157,13 @@ export namespace Aqueduct {
     }
 
     /**
-     * Current status of app
+     * To set maintenance status from redis-cli:
+set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: true, \&quot;reason\&quot;: \&quot;We are currently performing maintenance on our Ethereum nodes. Service will return as soon as possible.\&quot; }&quot;
+
+or to turn off
+
+set maintenance_status &quot;{ \&quot;isMaintenance\&quot;: false }&quot;
+Current status of app
      */
     export interface IMaintenanceStatus {
       isMaintenance: boolean;
@@ -350,6 +355,7 @@ PendingCancel (5)
       address: string;
       users: User[];
       apiKeys: ApiKey[];
+      authorizedWallets: AuthorizedWallet[];
       orders: Order[];
       transactionClaims: TransactionClaim[];
     }
@@ -372,6 +378,34 @@ PendingCancel (5)
       lastName: string;
       accountId: number;
       account: Account;
+      authorizedWallets: AuthorizedWallet[];
+      roles: UserRole[];
+    }
+
+    export interface AuthorizedWallet {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      /**
+       * Ethereum Account Address
+       */
+      address: string;
+      accountId: number;
+      userId: number;
+      account: Account;
+      user: User;
+    }
+
+    export interface UserRole {
     }
 
     export interface ApiKey {
@@ -1444,6 +1478,7 @@ export interface Account {
   address: string;
   users: User[];
   apiKeys: ApiKey[];
+  authorizedWallets: AuthorizedWallet[];
   orders: Order[];
   transactionClaims: TransactionClaim[];
   /**
@@ -1466,6 +1501,31 @@ export interface User {
   lastName: string;
   accountId: number;
   account: Account;
+  authorizedWallets: AuthorizedWallet[];
+  roles: ("ercdex-admin")[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface AuthorizedWallet {
+  /**
+   * Ethereum Account Address
+   */
+  address: string;
+  accountId: number;
+  userId: number;
+  account: Account;
+  user: User;
   /**
    * Unique Identifier
    */
@@ -1748,6 +1808,7 @@ export interface Account {
   address: string;
   users: User[];
   apiKeys: ApiKey[];
+  authorizedWallets: AuthorizedWallet[];
   orders: Order[];
   transactionClaims: TransactionClaim[];
   /**
@@ -1770,6 +1831,31 @@ export interface User {
   lastName: string;
   accountId: number;
   account: Account;
+  authorizedWallets: AuthorizedWallet[];
+  roles: ("ercdex-admin")[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface AuthorizedWallet {
+  /**
+   * Ethereum Account Address
+   */
+  address: string;
+  accountId: number;
+  userId: number;
+  account: Account;
+  user: User;
   /**
    * Unique Identifier
    */
@@ -1991,6 +2077,7 @@ export interface Account {
   address: string;
   users: User[];
   apiKeys: ApiKey[];
+  authorizedWallets: AuthorizedWallet[];
   orders: Order[];
   transactionClaims: TransactionClaim[];
   /**
@@ -2013,6 +2100,31 @@ export interface User {
   lastName: string;
   accountId: number;
   account: Account;
+  authorizedWallets: AuthorizedWallet[];
+  roles: ("ercdex-admin")[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface AuthorizedWallet {
+  /**
+   * Ethereum Account Address
+   */
+  address: string;
+  accountId: number;
+  userId: number;
+  account: Account;
+  user: User;
   /**
    * Unique Identifier
    */
@@ -2125,7 +2237,6 @@ export interface IAggregatedOrderFeedData {
   
 }
 export interface IOrderBookListing {
-  volume: string;
   priceLevels: IPriceLevel[];
   
 }
