@@ -654,6 +654,10 @@ PendingCancel (5)
       networkId: number;
     }
 
+    export interface IFeesGetFeeRecipientsParams {
+      networkId: number;
+    }
+
     export interface INotificationsGetParams {
       account: string;
     }
@@ -853,6 +857,8 @@ PendingCancel (5)
        * Get fees for an order of described parameters
        */
       get(params: IFeesGetParams, headers?: IAdditionalHeaders): Promise<IFees>;
+
+      getFeeRecipients(params: IFeesGetFeeRecipientsParams, headers?: IAdditionalHeaders): Promise<any[]>;
     }
 
     export class FeesService extends ApiService implements IFeesService {
@@ -877,6 +883,15 @@ PendingCancel (5)
         };
         requestParams.apiKeyId = apiKeyId;
         return this.executeRequest<IFees>(requestParams, headers);
+      }
+
+      public async getFeeRecipients(params: IFeesGetFeeRecipientsParams, headers?: IAdditionalHeaders) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseApiUrl}/api/fees/recipients/${params.networkId}`
+        };
+        requestParams.apiKeyId = apiKeyId;
+        return this.executeRequest<any[]>(requestParams, headers);
       }
     }
     export interface INetworksService {
