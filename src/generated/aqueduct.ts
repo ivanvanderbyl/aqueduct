@@ -353,6 +353,8 @@ PendingCancel (5)
       state: string;
       country: string;
       address: string;
+      referrerAccountId?: number;
+      referrerAccount: Account;
       users: User[];
       apiKeys: ApiKey[];
       authorizedWallets: AuthorizedWallet[];
@@ -1491,6 +1493,8 @@ export interface Account {
   state: string;
   country: string;
   address: string;
+  referrerAccountId?: number;
+  referrerAccount: Account;
   users: User[];
   apiKeys: ApiKey[];
   authorizedWallets: AuthorizedWallet[];
@@ -1821,6 +1825,8 @@ export interface Account {
   state: string;
   country: string;
   address: string;
+  referrerAccountId?: number;
+  referrerAccount: Account;
   users: User[];
   apiKeys: ApiKey[];
   authorizedWallets: AuthorizedWallet[];
@@ -2090,6 +2096,8 @@ export interface Account {
   state: string;
   country: string;
   address: string;
+  referrerAccountId?: number;
+  referrerAccount: Account;
   users: User[];
   apiKeys: ApiKey[];
   authorizedWallets: AuthorizedWallet[];
@@ -2247,6 +2255,8 @@ export interface IAggregatedOrderFeedParams {
 */
 
 export interface IAggregatedOrderFeedData {
+  baseTokenAddress: string;
+  quoteTokenAddress: string;
   sells: IOrderBookListing;
   buys: IOrderBookListing;
   
