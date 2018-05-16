@@ -2694,6 +2694,7 @@ export interface IPriceLevel {
        */
       public unsubscribe() {
         send(`unsub:${this.getChannel(this.params)}`);
+        subscriptions[this.getChannel(this.params)] = undefined;
       }
 
       private getChannel(params: P) {
