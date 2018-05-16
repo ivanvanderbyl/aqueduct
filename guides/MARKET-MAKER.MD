@@ -4,7 +4,7 @@ Market Maker refers to any person or group that opens resting, competitively pri
 
 ## Overview
 
-Partners open new orders ("Limit Orders") to buy or sell tokens. Management of orders can be done manually through the UI or using, our Aqueduct SDK, or with [Automated Market Maker (AMM)](https://github.com/ERCdEX/automated-market-maker).
+Partners open new orders ("Limit Orders") to buy or sell tokens. Management of orders can be done manually through the UI or using, our Aqueduct SDK, or with [the Automation Toolkit](https://github.com/ERCdEX/automation-toolkit).
 
 Market makers may contact us to enter into a designated market maker agreement, which may enable favorable fee structures or rebates.
 
@@ -32,9 +32,9 @@ The rebate will take effect on orders created after the contract has been succes
 
 ## Trading
 
-### Using the Automated Market Maker
+### Using the Automation Toolkit
 
-The [Automated Market Maker (AMM)](https://github.com/ERCdEX/automated-market-maker) tool is the easiest way to start making markets on ERC dEX. 
+The [Automation Toolkit](https://github.com/ERCdEX/automation-toolkit) tool is the easiest way to start making markets on ERC dEX. 
 
 ![Market Maker](./screenshots/market-maker.png)
 
