@@ -147,10 +147,6 @@ export namespace Aqueduct {
        */
       label: string;
       /**
-       * Network endpoint
-       */
-      url: string;
-      /**
        * For general, readonly querying
        */
       queryUrl: string;
@@ -354,34 +350,15 @@ PendingCancel (5)
       country: string;
       address: string;
       referrerAccountId?: number;
+      referralWalletId?: number;
       referrerAccount: Account;
+      referralWallet?: AuthorizedWallet;
       users: User[];
+      rebateContracts: RebateContract[];
       apiKeys: ApiKey[];
       authorizedWallets: AuthorizedWallet[];
       orders: Order[];
       transactionClaims: TransactionClaim[];
-    }
-
-    export interface User {
-      /**
-       * Unique Identifier
-       */
-      id: number;
-      /**
-       * Date of creation
-       */
-      dateCreated: Date;
-      /**
-       * Date of updated
-       */
-      dateUpdated: Date;
-      email: string;
-      firstName: string;
-      lastName: string;
-      accountId: number;
-      account: Account;
-      authorizedWallets: AuthorizedWallet[];
-      roles: UserRole[];
     }
 
     export interface AuthorizedWallet {
@@ -408,6 +385,51 @@ PendingCancel (5)
     }
 
     export interface UserRole {
+    }
+
+    export interface User {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      email: string;
+      firstName: string;
+      lastName: string;
+      accountId: number;
+      account: Account;
+      authorizedWallets: AuthorizedWallet[];
+      roles: UserRole[];
+    }
+
+    export interface RebateContract {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      txHash: string;
+      contractAddress: string;
+      principal: string;
+      partner: string;
+      referrer?: string;
+      networkId: number;
+      accountId: number;
+      account: Account;
     }
 
     export interface ApiKey {
@@ -634,6 +656,144 @@ PendingCancel (5)
       ask?: string;
     }
 
+    export interface TradeHistoryLog {
+      /**
+       * Unique Identifier
+       */
+      id: number;
+      /**
+       * Date of creation
+       */
+      dateCreated: Date;
+      /**
+       * Date of updated
+       */
+      dateUpdated: Date;
+      /**
+       * Unique, generated hash representing 0x order
+       */
+      orderHash: string;
+      /**
+       * Transaction Hash
+       */
+      txHash: string;
+      /**
+       * Ethereum Network
+Mainnet: 1
+Kovan: 42
+       */
+      networkId: number;
+      /**
+       * Address of order maker
+       */
+      maker: string;
+      /**
+       * Address of order taker
+       */
+      taker: string;
+      /**
+       * Address of order feeRecipient
+       */
+      feeRecipient: string;
+      /**
+       * Address of maker token
+       */
+      makerTokenAddress: string;
+      /**
+       * Symbol of maker token
+       */
+      makerTokenSymbol: string;
+      /**
+       * Name of maker token
+       */
+      makerTokenName: string;
+      /**
+       * Decimals of maker token
+       */
+      makerTokenDecimals: number;
+      /**
+       * Unit price of maker token in USD
+       */
+      makerTokenUsdPrice: string;
+      /**
+       * Address of taker token
+       */
+      takerTokenAddress: string;
+      /**
+       * Symbol of taker token
+       */
+      takerTokenSymbol: string;
+      /**
+       * Name of taker token
+       */
+      takerTokenName: string;
+      takerTokenDecimals: number;
+      /**
+       * Unit price of taker token in USD
+       */
+      takerTokenUsdPrice: string;
+      /**
+       * Base amount of maker token filled in trade
+       */
+      filledMakerTokenAmount: string;
+      /**
+       * Unit amount of maker token filled in trade (adjusted for token decimals)
+       */
+      filledMakerTokenUnitAmount: string;
+      /**
+       * USD value of maker amount
+       */
+      filledMakerTokenAmountUsd: string;
+      /**
+       * Base amount of taker token filled in trade
+       */
+      filledTakerTokenAmount: string;
+      /**
+       * Unit amount of taker token filled in trade (adjusted for token decimals)
+       */
+      filledTakerTokenUnitAmount: string;
+      /**
+       * USD value of taker amount
+       */
+      filledTakerTokenAmountUsd: string;
+      /**
+       * Base amount of ZRX fees collected from maker
+       */
+      paidMakerFeeAmount: string;
+      /**
+       * Unit amount of ZRX fees collected from maker
+       */
+      paidMakerFeeUnitAmount: string;
+      /**
+       * USD value of maker fee
+       */
+      paidMakerFeeUsd: string;
+      /**
+       * Base amount of ZRX fees collected from taker
+       */
+      paidTakerFeeAmount: string;
+      /**
+       * Unit amount of ZRX fees collected from taker
+       */
+      paidTakerFeeUnitAmount: string;
+      /**
+       * USD value of taker fee
+       */
+      paidTakerFeeUsd: string;
+      /**
+       * Name of originating relayer (if known)
+       */
+      relayer: string;
+    }
+
+    export interface IGetTradeHistoryLogsResponse {
+      page: number;
+      perPage: number;
+      pages: number;
+      total: number;
+      records: TradeHistoryLog[];
+    }
+
     export interface IClaimTransactionRequest {
       networkId: number;
       txHash: string;
@@ -826,6 +986,102 @@ PendingCancel (5)
        * ID of Ethereum network
        */
       networkId: number;
+    }
+
+    export interface ITradeHistoryLogsGetParams {
+      /**
+       * Ethereum Network ID (default: 1)
+Mainnet: 1
+Kovan: 42
+       */
+      network_id?: number;
+      /**
+       * Page number (default: 1)
+       */
+      page?: number;
+      /**
+       * Page size (max 1000, default: 20)
+       */
+      per_page?: number;
+      /**
+       * Sort order (default: &#x27;date&#x27;)
+date: Sort by trade date
+       */
+      sort_order?: string;
+      /**
+       * Sort direction (default: &#x27;desc&#x27;)
+asc: Ascending
+desc: Descending
+       */
+      sort_direction?: string;
+      /**
+       * Name of originating 0x relayer
+       */
+      relayer?: string;
+      /**
+       * Address of order maker
+       */
+      maker?: string;
+      /**
+       * Address of order feeRecipient
+       */
+      fee_recipient?: string;
+      /**
+       * Address of maker token
+       */
+      maker_token_address?: string;
+      /**
+       * Symbol of maker token
+       */
+      maker_token_symbol?: string;
+      /**
+       * Address of order taker
+       */
+      taker?: string;
+      /**
+       * Address of taker token
+       */
+      taker_token_address?: string;
+      /**
+       * Symbol of taker token
+       */
+      taker_token_symbol?: string;
+      /**
+       * Unique, generated hash representing 0x order
+       */
+      order_hash?: string;
+      /**
+       * Address of token that is either maker or taker
+       */
+      token_address?: string;
+      /**
+       * Symbol of token that is either maker or taker
+       */
+      token_symbol?: string;
+      /**
+       * Transaction hash
+       */
+      tx_hash?: string;
+      /**
+       * Address of either maker or taker
+       */
+      trader?: string;
+      /**
+       * Minimum trade date
+format (UTC): 2017-01-01T00:00:00.000Z
+       */
+      min_date?: Date;
+      /**
+       * Maximum trade date
+format (UTC): 2017-01-01T00:00:00.000Z
+       */
+      max_date?: Date;
+      /**
+       * Result format (default: &#x27;json&#x27;)
+options: &#x27;json&#x27;, &#x27;csv&#x27;
+CSV: Page size limited to 10000 records
+       */
+      format?: string;
     }
 
     export interface ITransactionClaimsClaimParams {
@@ -1305,6 +1561,46 @@ Do on-chain cancellation for permanent cancelation
         return this.executeRequest<ITokenPair[]>(requestParams, headers);
       }
     }
+    export interface ITradeHistoryLogsService {
+
+      get(params: ITradeHistoryLogsGetParams, headers?: IAdditionalHeaders): Promise<IGetTradeHistoryLogsResponse>;
+    }
+
+    export class TradeHistoryLogsService extends ApiService implements ITradeHistoryLogsService {
+
+      public async get(params: ITradeHistoryLogsGetParams, headers?: IAdditionalHeaders) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseApiUrl}/api/trade_history_logs`
+        };
+
+        requestParams.queryParameters = {
+          network_id: params.network_id,
+          page: params.page,
+          per_page: params.per_page,
+          sort_order: params.sort_order,
+          sort_direction: params.sort_direction,
+          relayer: params.relayer,
+          maker: params.maker,
+          fee_recipient: params.fee_recipient,
+          maker_token_address: params.maker_token_address,
+          maker_token_symbol: params.maker_token_symbol,
+          taker: params.taker,
+          taker_token_address: params.taker_token_address,
+          taker_token_symbol: params.taker_token_symbol,
+          order_hash: params.order_hash,
+          token_address: params.token_address,
+          token_symbol: params.token_symbol,
+          tx_hash: params.tx_hash,
+          trader: params.trader,
+          min_date: params.min_date,
+          max_date: params.max_date,
+          format: params.format,
+        };
+        requestParams.apiKeyId = apiKeyId;
+        return this.executeRequest<IGetTradeHistoryLogsResponse>(requestParams, headers);
+      }
+    }
     export interface ITransactionClaimsService {
 
       claim(params: ITransactionClaimsClaimParams, headers?: IAdditionalHeaders): Promise<void>;
@@ -1494,12 +1790,38 @@ export interface Account {
   country: string;
   address: string;
   referrerAccountId?: number;
+  referralWalletId?: number;
   referrerAccount: Account;
+  referralWallet?: AuthorizedWallet;
   users: User[];
+  rebateContracts: RebateContract[];
   apiKeys: ApiKey[];
   authorizedWallets: AuthorizedWallet[];
   orders: Order[];
   transactionClaims: TransactionClaim[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface AuthorizedWallet {
+  /**
+   * Ethereum Account Address
+   */
+  address: string;
+  accountId: number;
+  userId: number;
+  account: Account;
+  user: User;
   /**
    * Unique Identifier
    */
@@ -1536,15 +1858,15 @@ export interface User {
   dateUpdated: Date;
   
 }
-export interface AuthorizedWallet {
-  /**
-   * Ethereum Account Address
-   */
-  address: string;
+export interface RebateContract {
+  txHash: string;
+  contractAddress: string;
+  principal: string;
+  partner: string;
+  referrer?: string;
+  networkId: number;
   accountId: number;
-  userId: number;
   account: Account;
-  user: User;
   /**
    * Unique Identifier
    */
@@ -1826,12 +2148,38 @@ export interface Account {
   country: string;
   address: string;
   referrerAccountId?: number;
+  referralWalletId?: number;
   referrerAccount: Account;
+  referralWallet?: AuthorizedWallet;
   users: User[];
+  rebateContracts: RebateContract[];
   apiKeys: ApiKey[];
   authorizedWallets: AuthorizedWallet[];
   orders: Order[];
   transactionClaims: TransactionClaim[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface AuthorizedWallet {
+  /**
+   * Ethereum Account Address
+   */
+  address: string;
+  accountId: number;
+  userId: number;
+  account: Account;
+  user: User;
   /**
    * Unique Identifier
    */
@@ -1868,15 +2216,15 @@ export interface User {
   dateUpdated: Date;
   
 }
-export interface AuthorizedWallet {
-  /**
-   * Ethereum Account Address
-   */
-  address: string;
+export interface RebateContract {
+  txHash: string;
+  contractAddress: string;
+  principal: string;
+  partner: string;
+  referrer?: string;
+  networkId: number;
   accountId: number;
-  userId: number;
   account: Account;
-  user: User;
   /**
    * Unique Identifier
    */
@@ -2097,12 +2445,38 @@ export interface Account {
   country: string;
   address: string;
   referrerAccountId?: number;
+  referralWalletId?: number;
   referrerAccount: Account;
+  referralWallet?: AuthorizedWallet;
   users: User[];
+  rebateContracts: RebateContract[];
   apiKeys: ApiKey[];
   authorizedWallets: AuthorizedWallet[];
   orders: Order[];
   transactionClaims: TransactionClaim[];
+  /**
+   * Unique Identifier
+   */
+  id: number;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateCreated: Date;
+  /**
+   * Enables basic storage and retrieval of dates and times.
+   */
+  dateUpdated: Date;
+  
+}
+export interface AuthorizedWallet {
+  /**
+   * Ethereum Account Address
+   */
+  address: string;
+  accountId: number;
+  userId: number;
+  account: Account;
+  user: User;
   /**
    * Unique Identifier
    */
@@ -2139,15 +2513,15 @@ export interface User {
   dateUpdated: Date;
   
 }
-export interface AuthorizedWallet {
-  /**
-   * Ethereum Account Address
-   */
-  address: string;
+export interface RebateContract {
+  txHash: string;
+  contractAddress: string;
+  principal: string;
+  partner: string;
+  referrer?: string;
+  networkId: number;
   accountId: number;
-  userId: number;
   account: Account;
-  user: User;
   /**
    * Unique Identifier
    */
