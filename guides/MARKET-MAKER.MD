@@ -44,7 +44,7 @@ AMM offers a user-friendly UI and scripting capability, all in a secure, turn-ke
 
 The Aqueduct SDK offers a way to create automated trading. Review the primary [Aqueduct Documentation](../README.MD) for more information on how to begin with the SDK.
 
-For a simple example on how to create orders with Aqueduct, review the example for [Placing a Limit Order](./src/examples/placing-limit-order.ts).
+For a simple example on how to create orders with Aqueduct, review the example for [Placing a Limit Order](https://github.com/ERCdEX/aqueduct/blob/master/src/examples/placing-limit-order.ts).
 
 ### Using the UI
 
