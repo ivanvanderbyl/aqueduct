@@ -1,6 +1,6 @@
 {
   "name": "aqueduct",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Aqueduct: API and Socket client for ERC dEX",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -30,9 +30,9 @@
     "ts-node": "ts-node"
   },
   "dependencies": {
-    "0x.js": "^0.36.0",
-    "@0xproject/types": "^0.1.0",
-    "@0xproject/typescript-typings": "^0.1.0",
+    "0x.js": "^0.37.2",
+    "@0xproject/types": "^0.7.0",
+    "@0xproject/typescript-typings": "^0.3.2",
     "@types/bignumber.js": "^4.0.3",
     "moment": "^2.19.1",
     "reconnecting-websocket": "^3.2.2",
