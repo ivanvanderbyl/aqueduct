@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import * as Web3 from 'web3';
 import { Aqueduct } from './generated/aqueduct';
 import { tokenCache } from './token-cache';
 import { Web3EnabledService } from './web3-enabled-service';
@@ -17,9 +18,9 @@ export interface IMarketOrderParams {
   quoteTokenSymbol: string;
 
   /**
-   * Ethereum node URL
+   * Web3 insatnce
    */
-  nodeUrl: string;
+  web3: Web3;
 
   /**
    * Ethereum account address
@@ -31,7 +32,7 @@ export interface IMarketOrderParams {
 
 export class MarketOrder extends Web3EnabledService<string> {
   constructor(private readonly params: IMarketOrderParams) {
-    super(params.nodeUrl);
+    super(params.web3);
   }
 
   protected async run() {

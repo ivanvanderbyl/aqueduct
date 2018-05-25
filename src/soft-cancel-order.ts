@@ -1,11 +1,9 @@
+import * as Web3 from 'web3';
 import { Aqueduct } from './generated/aqueduct';
 import { Web3EnabledService } from './web3-enabled-service';
 
 export interface ISoftCancelOrderParams {
-  /**
-   * Ethereum node url
-   */
-  nodeUrl: string;
+  web3: Web3;
 
   /**
    * Order Hash
@@ -18,11 +16,7 @@ export interface ISoftCancelOrderParams {
  */
 export class SoftCancelOrder extends Web3EnabledService<void> {
   constructor(private readonly params: ISoftCancelOrderParams) {
-    super(params.nodeUrl);
-
-    if (!params.nodeUrl) {
-      throw new Error('no nodeUrl provided');
-    }
+    super(params.web3);
 
     if (!params.orderHash) {
       throw new Error('no orderHash provided');

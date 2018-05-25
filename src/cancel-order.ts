@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js';
+import * as Web3 from 'web3';
 import { Aqueduct } from './generated/aqueduct';
 import { Web3EnabledService } from './web3-enabled-service';
 
 export interface ICancelOrderParams {
   /**
-   * Ethereum node url
+   * Web3 instance
    */
-  nodeUrl: string;
+  web3: Web3;
 
   /**
    * Order Hash
@@ -24,11 +25,7 @@ export interface ICancelOrderParams {
  */
 export class CancelOrder extends Web3EnabledService<string> {
   constructor(private readonly params: ICancelOrderParams) {
-    super(params.nodeUrl);
-
-    if (!params.nodeUrl) {
-      throw new Error('no nodeUrl provided');
-    }
+    super(params.web3);
 
     if (!params.orderHash) {
       throw new Error('no orderHash provided');

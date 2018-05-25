@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import * as Web3 from 'web3';
 import { Aqueduct } from '../generated/aqueduct';
 import { LimitOrder } from '../limit-order';
 
@@ -19,7 +20,7 @@ Aqueduct.Initialize();
     // buying ZRX
     type: 'buy',
     // points to a local node (Parity)
-    nodeUrl: 'http://localhost:8545'
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }).execute();
 
   console.log(order);

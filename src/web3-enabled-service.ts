@@ -2,13 +2,10 @@ import { ZeroEx } from '0x.js/lib/src/0x';
 import * as Web3 from 'web3';
 
 export abstract class Web3EnabledService<T> {
-  protected readonly web3: Web3;
   protected networkId: number;
   protected zeroEx: ZeroEx;
 
-  constructor(nodeUrl: string) {
-    this.web3 = new Web3(new Web3.providers.HttpProvider(nodeUrl));
-   }
+  constructor(protected readonly web3: Web3) { }
 
   public async execute() {
     try {

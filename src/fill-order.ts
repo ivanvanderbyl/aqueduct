@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js';
+import * as Web3 from 'web3';
 import { Aqueduct } from './generated/aqueduct';
 import { Web3EnabledService } from './web3-enabled-service';
 
 export interface IFillOrderParams {
-  nodeUrl: string;
+  web3: Web3;
   orderHash: string;
 
   /**
@@ -15,7 +16,7 @@ export interface IFillOrderParams {
 
 export class FillOrder extends Web3EnabledService<string> {
   constructor(private readonly params: IFillOrderParams) {
-    super(params.nodeUrl);
+    super(params.web3);
   }
 
   protected async run() {

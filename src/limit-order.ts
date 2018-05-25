@@ -1,14 +1,12 @@
 import { ZeroEx } from '0x.js/lib/src/0x';
 import { BigNumber } from 'bignumber.js';
+import * as Web3 from 'web3';
 import { Aqueduct } from './generated/aqueduct';
 import { tokenCache } from './token-cache';
 import { Web3EnabledService } from './web3-enabled-service';
 
 export interface ILimitOrderParams {
-  /**
-   * Ethereum node url
-   */
-  nodeUrl: string;
+  web3: Web3;
 
   /**
    * Limit orders can be a buy or a sell order
@@ -67,7 +65,7 @@ export const nullAddress = '0x0000000000000000000000000000000000000000';
 
 export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
   constructor(private readonly params: ILimitOrderParams) {
-    super(params.nodeUrl);
+    super(params.web3);
    }
 
   protected async run() {

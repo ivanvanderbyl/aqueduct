@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import * as Web3 from 'web3';
 import { Aqueduct } from '../generated/aqueduct';
 import { MarketOrder } from '../market-order';
 
@@ -12,7 +13,7 @@ Aqueduct.Initialize();
     quoteTokenSymbol: 'WETH',
     // buying .1 MLN
     quantityInWei: new BigNumber(100000000000000000),
-    nodeUrl: 'http://localhost:8545',
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545')),
     type: 'buy'
   }).execute();
 })();

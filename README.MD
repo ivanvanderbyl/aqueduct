@@ -59,6 +59,7 @@ Limit orders represent a brand new order with a quantity and price specified by 
 import { BigNumber } from 'bignumber.js';
 import { Aqueduct } from 'aqueduct';
 import { LimitOrder } from '../limit-order';
+import * as Web3 from 'web3';
 
 Aqueduct.Initialize();
 
@@ -76,7 +77,7 @@ Aqueduct.Initialize();
     // buying ZRX
     type: 'buy',
     // points to a local node (Parity)
-    nodeUrl: 'http://localhost:8545'
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }).execute();
 
   console.log(order);
@@ -93,6 +94,7 @@ Market orders attempt to fill existing orders at the best price. Traders placing
 ```
 import { BigNumber } from 'bignumber.js';
 import { Aqueduct, MarketOrder } from 'aqueduct';
+import * as Web3 from 'web3';
 
 // Initialize the Aqueduct client
 Aqueduct.Initialize();
@@ -104,7 +106,7 @@ Aqueduct.Initialize();
     quoteTokenSymbol: 'WETH',
     // buying .1 MLN
     quantityInWei: new BigNumber(100000000000000000),
-    nodeUrl: 'http://localhost:8545',
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
     type: 'buy'
   }).execute();
 })();
@@ -119,6 +121,7 @@ You may want to fill a single order rather than using the more advanced Market O
 import { ZeroEx } from '0x.js';
 import { BigNumber } from 'bignumber.js';
 import { Aqueduct, FillOrder } from 'aqueduct';
+import * as Web3 from 'web3';
 
 Aqueduct.Initialize();
 
@@ -127,7 +130,7 @@ Aqueduct.Initialize();
     orderHash: '0x96be98070f1e3b0ff06014f34d5916e7a26b37b60f5583b44c7dca27e0051eaa',
     takerAmountInWei: ZeroEx.toBaseUnitAmount(new BigNumber(0.000012), 18),
     account: '0x00be81aeb2c6b82c68123f49b4bf983224124ada',
-    nodeUrl: 'http://localhost:8545'
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }).execute();
 
   process.exit(0);
@@ -141,13 +144,14 @@ Traders can cancel limit orders that they've opened.
 
 ```
 import { Aqueduct, CancelOrder } from 'aqueduct';
+import * as Web3 from 'web3';
 
 (async () => {
   Aqueduct.Initialize();
 
   const cancelTxHash = await new CancelOrder({
     orderHash: '0x1ec30426e15451eb75d324c2b674f65b5a0acdcfab6bba772e3347c30296c5c6',
-    nodeUrl: 'http://localhost:8545'
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }).execute();
 
   console.log(`order cancelled. tx: ${cancelTxHash}`);
@@ -163,13 +167,14 @@ technically fillable by anyone that has the order metadata.
 
 ```
 import { Aqueduct, SoftCancelOrder } from 'aqueduct';
+import * as Web3 from 'web3';
 
 (async () => {
   Aqueduct.Initialize();
 
   await new SoftCancelOrder({
     orderHash: '0x1ec30426e15451eb75d324c2b674f65b5a0acdcfab6bba772e3347c30296c5c6',
-    nodeUrl: 'http://localhost:8545'
+    web3: new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }).execute();
 })();
 
