@@ -38,7 +38,7 @@ The [Automation Toolkit](https://github.com/ERCdEX/automation-toolkit) tool is t
 
 ![Market Maker](./screenshots/market-maker.png)
 
-AMM offers a user-friendly UI and scripting capability, all in a secure, turn-key software package that supports both non-technical and highly technical traders.
+The toolkit offers a user-friendly UI and scripting capability, all in a secure, turn-key software package that supports both non-technical and highly technical traders.
 
 ### Using scripts/automation
 
