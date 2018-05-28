@@ -26,12 +26,12 @@ export interface ILimitOrderParams {
   /**
    * Quantity of order - MUST BE IN BASE UNITS!!!
    */
-  quantityInWei: BigNumber;
+  quantityInWei: number | string | BigNumber;
 
   /**
    * Price
    */
-  price: BigNumber;
+  price: number | string | BigNumber;
 
   /**
    * Ethereum wallet address
@@ -78,7 +78,7 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       throw new Error(`order quantity must be greater than minimum allowed amount: ${this.params.quantityInWei}/${tokenPair.minimumQuantity}`);
     }
 
-    if (!this.params.quantityInWei.isInt()) {
+    if (!new BigNumber(this.params.quantityInWei).isInt()) {
       throw new Error(`order quantity must be an integer, got ${this.params.quantityInWei.toString()}`);
     }
 
@@ -90,12 +90,12 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
     if (this.params.type === 'buy') {
       makerToken = quoteToken;
       takerToken = baseToken;
-      takerTokenAmount = this.params.quantityInWei;
+      takerTokenAmount = new BigNumber(this.params.quantityInWei);
       makerTokenAmount = takerTokenAmount.times(this.params.price).round();
     } else {
       makerToken = baseToken;
       takerToken = quoteToken;
-      makerTokenAmount = this.params.quantityInWei;
+      makerTokenAmount = new BigNumber(this.params.quantityInWei);
       takerTokenAmount = makerTokenAmount.times(this.params.price).round();
     }
 
