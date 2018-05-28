@@ -17,7 +17,7 @@ export interface ICancelOrderParams {
   /**
    * Gas Price
    */
-  gasPrice?: BigNumber;
+  gasPrice?: string | number | BigNumber;
 }
 
 /**
@@ -48,7 +48,7 @@ export class CancelOrder extends Web3EnabledService<string> {
 
     try {
       return await this.zeroEx.exchange.cancelOrderAsync(signedOrder, new BigNumber(signedOrder.takerTokenAmount), {
-        gasPrice: this.params.gasPrice
+        gasPrice: this.params.gasPrice ? new BigNumber(this.params.gasPrice) : undefined
       });
     } catch (err) {
       console.error('failed to cancel order');
