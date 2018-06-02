@@ -291,6 +291,7 @@ PendingCancel (5)
        */
       state: number;
       source: string;
+      price?: string;
       takerEvents: TakerEvent[];
       account?: Account;
     }
@@ -349,8 +350,11 @@ PendingCancel (5)
       state: string;
       country: string;
       address: string;
+      accountType?: string;
+      phoneNumber?: string;
       referrerAccountId?: number;
       referralWalletId?: number;
+      isConfirmed: boolean;
       referrerAccount: Account;
       referralWallet?: AuthorizedWallet;
       users: User[];
@@ -630,6 +634,57 @@ PendingCancel (5)
     export interface IStandardOrderbook {
       bids: IStandardOrder[];
       asks: IStandardOrder[];
+    }
+
+    export interface IGlobalTickerRecord {
+      /**
+       * Base token of trade, e.g. &#x27;ZRX&#x27; in &#x27;ZRX/WETH&#x27;
+       */
+      baseTokenSymbol: string;
+      /**
+       * Quote token of trade, e.g. &#x27;WETH&#x27; in &#x27;ZRX/WETH&#x27;
+       */
+      quoteTokenSymbol: string;
+      /**
+       * Volume in base token units
+       */
+      baseVolume: string;
+      /**
+       * Volume in quote token units
+       */
+      quoteVolume: string;
+      /**
+       * Current best (lowest) ask price
+       */
+      ask?: string;
+      /**
+       * Current best (highest) bid price
+       */
+      bid?: string;
+      /**
+       * Lowest price in time period
+       */
+      low?: string;
+      /**
+       * Highest price in time period
+       */
+      high?: string;
+      /**
+       * Most recent price at beginning of time period
+       */
+      open?: string;
+      /**
+       * Most recent price
+       */
+      last?: string;
+      /**
+       * Percentage change of price in period
+       */
+      percentChange: string;
+      /**
+       * Unix timestamp of quote
+       */
+      timestamp: number;
     }
 
     export interface IToken {
@@ -972,6 +1027,22 @@ Kovan: 42
        */
       takerTokenAddress: string;
       taker?: string;
+    }
+
+    export interface ITickerGetParams {
+      /**
+       * Ethereum Network ID
+1 (mainnet - default)
+42 (kovan/testnet)
+       */
+      networkId?: number;
+      /**
+       * Granularity of results
+24h (1 day)
+1w (1 week)
+1mo (1 month)
+       */
+      granularity?: string;
     }
 
     export interface ITokenPairSummariesGetParams {
@@ -1517,6 +1588,27 @@ Do on-chain cancellation for permanent cancelation
         return this.executeRequest<TakerEvent[]>(requestParams, headers);
       }
     }
+    export interface ITickerService {
+
+      get(params: ITickerGetParams, headers?: IAdditionalHeaders): Promise<IGlobalTickerRecord[]>;
+    }
+
+    export class TickerService extends ApiService implements ITickerService {
+
+      public async get(params: ITickerGetParams, headers?: IAdditionalHeaders) {
+        const requestParams: IRequestParams = {
+          method: 'GET',
+          url: `${baseApiUrl}/api/ticker`
+        };
+
+        requestParams.queryParameters = {
+          networkId: params.networkId,
+          granularity: params.granularity,
+        };
+        requestParams.apiKeyId = apiKeyId;
+        return this.executeRequest<IGlobalTickerRecord[]>(requestParams, headers);
+      }
+    }
     export interface ITokenPairSummariesService {
 
       /**
@@ -1731,6 +1823,7 @@ export interface Order {
    */
   state: number;
   source: string;
+  price?: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -1789,8 +1882,11 @@ export interface Account {
   state: string;
   country: string;
   address: string;
+  accountType?: ("developer" | "market-maker" | "other" | "relayer" | "trader");
+  phoneNumber?: string;
   referrerAccountId?: number;
   referralWalletId?: number;
+  isConfirmed: boolean;
   referrerAccount: Account;
   referralWallet?: AuthorizedWallet;
   users: User[];
@@ -2125,6 +2221,7 @@ export interface Order {
    */
   state: number;
   source: string;
+  price?: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -2147,8 +2244,11 @@ export interface Account {
   state: string;
   country: string;
   address: string;
+  accountType?: ("developer" | "market-maker" | "other" | "relayer" | "trader");
+  phoneNumber?: string;
   referrerAccountId?: number;
   referralWalletId?: number;
+  isConfirmed: boolean;
   referrerAccount: Account;
   referralWallet?: AuthorizedWallet;
   users: User[];
@@ -2422,6 +2522,7 @@ export interface Order {
    */
   state: number;
   source: string;
+  price?: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -2444,8 +2545,11 @@ export interface Account {
   state: string;
   country: string;
   address: string;
+  accountType?: ("developer" | "market-maker" | "other" | "relayer" | "trader");
+  phoneNumber?: string;
   referrerAccountId?: number;
   referralWalletId?: number;
+  isConfirmed: boolean;
   referrerAccount: Account;
   referralWallet?: AuthorizedWallet;
   users: User[];
