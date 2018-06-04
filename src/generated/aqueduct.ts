@@ -291,7 +291,7 @@ PendingCancel (5)
        */
       state: number;
       source: string;
-      price?: string;
+      price: string;
       takerEvents: TakerEvent[];
       account?: Account;
     }
@@ -1823,7 +1823,7 @@ export interface Order {
    */
   state: number;
   source: string;
-  price?: string;
+  price: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -2221,7 +2221,7 @@ export interface Order {
    */
   state: number;
   source: string;
-  price?: string;
+  price: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -2522,7 +2522,7 @@ export interface Order {
    */
   state: number;
   source: string;
-  price?: string;
+  price: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
