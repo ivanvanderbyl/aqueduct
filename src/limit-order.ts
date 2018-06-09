@@ -63,6 +63,10 @@ interface IValidateParams {
 
 export const nullAddress = '0x0000000000000000000000000000000000000000';
 
+export const denormalizedTokenPrice = (value: BigNumber, decimals: number) => {
+  return value.times(new BigNumber(10).pow(18 - decimals));
+};
+
 export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
   constructor(private readonly params: ILimitOrderParams) {
     super(params.web3);
@@ -91,12 +95,14 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       makerToken = quoteToken;
       takerToken = baseToken;
       takerTokenAmount = new BigNumber(this.params.quantityInWei);
-      makerTokenAmount = takerTokenAmount.times(this.params.price).round();
+      makerTokenAmount = denormalizedTokenPrice(takerTokenAmount.times(new BigNumber(this.params.price)), tokenPair.tokenA.decimals)
+        .round();
     } else {
       makerToken = baseToken;
       takerToken = quoteToken;
       makerTokenAmount = new BigNumber(this.params.quantityInWei);
-      takerTokenAmount = makerTokenAmount.times(this.params.price).round();
+      takerTokenAmount = denormalizedTokenPrice(makerTokenAmount.times(new BigNumber(this.params.price)), tokenPair.tokenA.decimals)
+        .round();
     }
 
     let fees: Aqueduct.Api.IFees;
@@ -141,12 +147,12 @@ export class LimitOrder extends Web3EnabledService<Aqueduct.Api.Order> {
       feeRecipient: fees.feeRecipient,
       makerFee: new BigNumber(fees.makerFee),
       makerTokenAddress: makerToken.address,
-      makerTokenAmount: new BigNumber(makerTokenAmount),
+      makerTokenAmount,
       salt: new BigNumber(salt),
       taker: nullAddress,
       takerFee: new BigNumber(fees.takerFee),
       takerTokenAddress: takerToken.address,
-      takerTokenAmount: new BigNumber(takerTokenAmount)
+      takerTokenAmount
     };
 
     let signedOrder: Aqueduct.Api.IStandardOrderCreationRequest;
