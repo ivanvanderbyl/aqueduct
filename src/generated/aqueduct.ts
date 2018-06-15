@@ -703,14 +703,6 @@ PendingCancel (5)
       quoteVolume: string;
     }
 
-    export interface ITokenPairSummary {
-      tokenPair: ITokenPair;
-      lastPrice?: string;
-      netChange?: string;
-      bid?: string;
-      ask?: string;
-    }
-
     export interface TradeHistoryLog {
       /**
        * Unique Identifier
@@ -1043,13 +1035,6 @@ Kovan: 42
 1mo (1 month)
        */
       granularity?: string;
-    }
-
-    export interface ITokenPairSummariesGetParams {
-      /**
-       * ID of Ethereum network
-       */
-      networkId: number;
     }
 
     export interface ITokenPairsGetParams {
@@ -1609,28 +1594,6 @@ Do on-chain cancellation for permanent cancelation
         return this.executeRequest<IGlobalTickerRecord[]>(requestParams, headers);
       }
     }
-    export interface ITokenPairSummariesService {
-
-      /**
-       * Get a list of token pair summaries
-       */
-      get(params: ITokenPairSummariesGetParams, headers?: IAdditionalHeaders): Promise<ITokenPairSummary[]>;
-    }
-
-    export class TokenPairSummariesService extends ApiService implements ITokenPairSummariesService {
-
-      /**
-       * Get a list of token pair summaries
-       */
-      public async get(params: ITokenPairSummariesGetParams, headers?: IAdditionalHeaders) {
-        const requestParams: IRequestParams = {
-          method: 'GET',
-          url: `${baseApiUrl}/api/token-pair-summaries/${params.networkId}`
-        };
-        requestParams.apiKeyId = apiKeyId;
-        return this.executeRequest<ITokenPairSummary[]>(requestParams, headers);
-      }
-    }
     export interface ITokenPairsService {
 
       /**
@@ -1823,7 +1786,7 @@ export interface Order {
    */
   state: number;
   source: string;
-  price: string;
+  price?: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -2221,7 +2184,7 @@ export interface Order {
    */
   state: number;
   source: string;
-  price: string;
+  price?: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
@@ -2522,7 +2485,7 @@ export interface Order {
    */
   state: number;
   source: string;
-  price: string;
+  price?: string;
   takerEvents: TakerEvent[];
   account?: Account;
   /**
