@@ -215,7 +215,7 @@ Current status of app
       /**
        * Date on which the order was closed through fill, cancel, etc
        */
-      dateClosed: Date;
+      dateClosed?: Date;
       /**
        * ID of the Ethereum network the order is associated with
        */
@@ -1710,7 +1710,7 @@ export interface Order {
   /**
    * Enables basic storage and retrieval of dates and times.
    */
-  dateClosed: Date;
+  dateClosed?: string;
   /**
    * ID of the Ethereum network the order is associated with
    */
@@ -2108,7 +2108,7 @@ export interface Order {
   /**
    * Enables basic storage and retrieval of dates and times.
    */
-  dateClosed: Date;
+  dateClosed?: string;
   /**
    * ID of the Ethereum network the order is associated with
    */
@@ -2409,7 +2409,7 @@ export interface Order {
   /**
    * Enables basic storage and retrieval of dates and times.
    */
-  dateClosed: Date;
+  dateClosed?: string;
   /**
    * ID of the Ethereum network the order is associated with
    */
