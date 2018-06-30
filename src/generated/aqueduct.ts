@@ -41,7 +41,7 @@ export namespace Aqueduct {
   /**
    * Initialize the Aqueduct client. Required to use the client.
    */
-  export const Initialize = (params?: { host?: string; apiKeyId?: string; }) => {
+  export const Initialize = (params?: { host?: string; apiKeyId?: string; webSocketCtor?: any }) => {
     const hasProcess = typeof process !== 'undefined' && process.env;
     const host = (params && params.host) || (hasProcess && process.env.AQUEDUCT_HOST) || 'api.ercdex.com';
     baseApiUrl = `https://${host}`;
@@ -54,13 +54,17 @@ export namespace Aqueduct {
       process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 as any;
     }
 
-    hasWebSocket = typeof WebSocket !== 'undefined';
-    if (!hasWebSocket) {
-      console.warn('No WebSocket found in global namespace; subscriptions will not be configured.');
-      return;
-    }
+    if (params && params.webSocketCtor) {
+      socket = new params.webSocketCtor(`wss:${host}`, undefined);
+    }else{
+      hasWebSocket = typeof WebSocket !== 'undefined';
+      if (!hasWebSocket) {
+        console.warn('No WebSocket found in global namespace; subscriptions will not be configured.');
+        return;
+      }
 
-    socket = new ReconnectingWebsocket(`wss:${host}`, undefined);
+      socket = new ReconnectingWebsocket(`wss:${host}`, undefined);
+    }
 
     socket.onopen = () => {
       Object.keys(subscriptions).map(k => subscriptions[k]).forEach(s => {
