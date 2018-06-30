@@ -55,6 +55,7 @@ export namespace Aqueduct {
     }
 
     if (params && params.webSocketCtor) {
+      hasWebSocket = true
       socket = new params.webSocketCtor(`wss:${host}`, undefined);
     }else{
       hasWebSocket = typeof WebSocket !== 'undefined';
